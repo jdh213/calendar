@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':calendarlib'
 rootProject.name='calendar'
