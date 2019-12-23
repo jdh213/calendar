@@ -1,4 +1,4 @@
-package com.devroid.calendar
+package com.devroid.calendarlib
 
 import android.content.Context
 import android.util.AttributeSet
@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.control_calendar_day.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class CalendarView : LinearLayout {
 
@@ -112,4 +111,3 @@ class CalendarView : LinearLayout {
             RecyclerView.ViewHolder(containerView), LayoutContainer
     }
 }
-
