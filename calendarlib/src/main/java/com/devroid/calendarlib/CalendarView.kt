@@ -3,7 +3,7 @@ package com.devroid.calendarlib
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,16 +18,23 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CalendarView : LinearLayout {
+class CalendarView : LinearLayout, CalendarSet {
 
-    private var currentDate = Calendar.getInstance()
-    private var dateColor = Color.BLACK
-    private var weekColor = Color.BLACK
-    private var dayColor = Color.BLACK
-    private var daySize = 12f
     private var inflater: LayoutInflater? = null
+    private var currentDate = Calendar.getInstance()
+
+    private var dateColor = context.getColor(R.color.black)
+    private var weekColor = context.getColor(R.color.black)
+    private var dayColor = context.getColor(R.color.black)
+    private var daySize: Float? = null
+    private var daySelectPo = -1
 
     private var weekArray: ArrayList<TextView> = arrayListOf()
+
+    private val days: ArrayList<Date> = ArrayList()
+    private val daySelectFlag: ArrayList<Boolean> = ArrayList()
+
+    private var onDateSelectedListener: OnDateSelectedListener? = null
 
     constructor(context: Context?) : super(context)
 
@@ -57,17 +64,20 @@ class CalendarView : LinearLayout {
     private fun setListener() {
         calendar_next_button.setOnClickListener {
             currentDate.add(Calendar.MONTH, 1)
+            daySelectPo = -1
             updateCalendar()
         }
 
         calendar_prev_button.setOnClickListener {
             currentDate.add(Calendar.MONTH, -1)
+            daySelectPo = -1
             updateCalendar()
         }
     }
 
     private fun updateCalendar() {
-        val days: ArrayList<Date> = ArrayList()
+        days.clear()
+        daySelectFlag.clear()
 
         val calendar: Calendar = currentDate.clone() as Calendar
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -80,61 +90,107 @@ class CalendarView : LinearLayout {
 
         while (days.size < totalDayCount) {
             days.add(calendar.time)
+            daySelectFlag.add(false)
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        recycler_calendarView.adapter = CalendarViewAdapter(currentDate, days, dayColor, daySize)
+        if (daySelectPo != -1) {
+            daySelectFlag[daySelectPo] = true
+        }
+
+        val calendarAdapter = CalendarViewAdapter(currentDate, days, daySelectFlag, this)
+        calendarAdapter.onDateSelectedListener = onDateSelectedListener
+
         recycler_calendarView.layoutManager = GridLayoutManager(context, 7)
+        recycler_calendarView.adapter = calendarAdapter
 
         calendar_date.text =
-            SimpleDateFormat("yyyy-M", Locale.KOREAN).format(currentDate.time)
+            SimpleDateFormat("yyyy년 M월", Locale.KOREAN).format(currentDate.time)
     }
 
-    fun setTitle(size: Float) {
-        calendar_date.textSize = size
+    /**
+    Calendar Interface
+     */
+
+    override fun setTitle(size: Float) {
+        calendar_date.setTextSize(TypedValue.COMPLEX_UNIT_DIP, size)
     }
 
-    fun setTitle(size: Float, color: Int = Color.BLACK) {
+    override fun setTitle(size: Float, color: Int) {
         dateColor = color
-        calendar_date.textSize = size
+        calendar_date.setTextSize(TypedValue.COMPLEX_UNIT_DIP, size)
         calendar_date.setTextColor(dateColor)
     }
 
-    fun setWeek(size: Float) {
+    override fun getTitleColor(): Int {
+        return dateColor
+    }
+
+    override fun setWeek(size: Float) {
         repeat(weekArray.size) { i ->
-            weekArray[i].textSize = size
+            weekArray[i].setTextSize(TypedValue.COMPLEX_UNIT_DIP, size)
         }
     }
 
-    fun setWeek(size: Float, color: Int = Color.BLACK) {
+    override fun setWeek(size: Float, color: Int) {
         weekColor = color
         repeat(weekArray.size) { i ->
             weekArray[i].setTextColor(weekColor)
-            weekArray[i].textSize = size
+            weekArray[i].setTextSize(TypedValue.COMPLEX_UNIT_DIP, size)
         }
     }
 
-    fun setDay(size: Float) {
+    override fun getWeekColor(): Int {
+        return weekColor
+    }
+
+    override fun setDay(size: Float) {
         daySize = size
         updateCalendar()
     }
 
-    fun setDay(size: Float, color: Int = Color.BLACK) {
+    override fun setDay(size: Float, color: Int) {
         daySize = size
         dayColor = color
         updateCalendar()
     }
 
+    override fun getDayColor(): Int {
+        return dayColor
+    }
+
+    override fun getDaySize(): Float? {
+        return daySize
+    }
+
+    fun setOnDateSelectedListener(listener: (View, Int, Date) -> Unit) {
+        onDateSelectedListener = object : OnDateSelectedListener {
+            override fun dateSelected(view: View, position: Int, date: Date) {
+                daySelectPo = position
+                updateCalendar()
+                listener(view, position, date)
+            }
+        }
+        updateCalendar()
+    }
+
+    /**
+     * CalendarView Day Adapter
+     */
+
     class CalendarViewAdapter(
         private val calendar: Calendar,
         private val day: ArrayList<Date>,
-        private val dayColor: Int,
-        private val daySize: Float
+        private val daySelectFlag: ArrayList<Boolean>,
+        private val calendarSet: CalendarSet
     ) :
         RecyclerView.Adapter<CalendarViewAdapter.ViewHolder>() {
 
+        var onDateSelectedListener: OnDateSelectedListener? = null
+
+        private var dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
         private var dayFormatter = SimpleDateFormat("d", Locale.KOREAN)
-        private var monthFormatter = SimpleDateFormat("yyyy-M", Locale.KOREAN)
+        private var monthFormatter = SimpleDateFormat("yyyy년 M월", Locale.KOREAN)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
@@ -151,12 +207,28 @@ class CalendarView : LinearLayout {
             holder.itemView.apply {
                 if (monthFormatter.format(day[position]) == monthFormatter.format(calendar.time)) {
 
-                    day_text.setTextColor(dayColor)
-                    day_text.textSize = daySize
                     day_text.text = dayFormatter.format(day[position])
 
+                    if (dateFormatter.format(day[position]) == dateFormatter.format(Calendar.getInstance().time)) {
+                        day_text.setTextAppearance(R.style.day_bold_textStyle)
+                    } else {
+                        day_text.setTextAppearance(R.style.day_textStyle)
+                    }
+
+                    calendarSet.apply {
+                        if (daySelectFlag[position]) {
+                            day_text.setTextColor(Color.RED)
+                        } else {
+                            day_text.setTextColor(getDayColor())
+                        }
+
+                        getDaySize()?.let {
+                            day_text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, it)
+                        }
+                    }
+
                     setOnClickListener {
-                        Log.i("debugLog", day[position].toString())
+                        onDateSelectedListener?.dateSelected(it, position, day[position])
                     }
                 }
             }

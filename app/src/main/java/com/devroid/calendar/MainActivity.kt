@@ -1,7 +1,9 @@
 package com.devroid.calendar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -9,8 +11,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        calendarView.setTitle(20f)
-//        calendarView.setWeek(14f, Color.RED)
-//        calendarView.setDay(14f, Color.BLUE)
+        calendarView.setOnDateSelectedListener { view, i, date ->
+            Log.i("debugLog", "main position : $i / date : $date")
+        }
+
+//        calendarView.apply {
+////            setTitle(20f)
+////            setWeek(14f, Color.RED)
+////            setDay(14f, Color.BLUE)
+////        }
+
     }
 }
