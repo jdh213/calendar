@@ -11,15 +11,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        calendarView.setOnDateSelectedListener { view, i, date ->
-            Log.i("debugLog", "main position : $i / date : $date")
+        calendarView.apply {
+            // setTitle(20f)
+            // setWeek(14f, Color.RED)
+            // setDay(14f, Color.BLUE)
+            // setSelectColor(Color.BLUE)
+            setSelectedToday(true)
+            setOnDateSelectedListener { view, i, date ->
+                Log.i("debugLog", "main position : $i / date : $date")
+            }
         }
-
-//        calendarView.apply {
-////            setTitle(20f)
-////            setWeek(14f, Color.RED)
-////            setDay(14f, Color.BLUE)
-////        }
 
     }
 }

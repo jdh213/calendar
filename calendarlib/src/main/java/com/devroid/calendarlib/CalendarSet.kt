@@ -1,5 +1,7 @@
 package com.devroid.calendarlib
 
+import android.graphics.Color
+
 interface CalendarSet {
     fun setTitle(size: Float) {}
     fun setTitle(size: Float, color: Int) {}
@@ -13,4 +15,10 @@ interface CalendarSet {
     fun setDay(size: Float, color: Int) {}
     fun getDayColor(): Int
     fun getDaySize(): Float?
+
+    fun setSelectedToday(select: Boolean = false) {}
+    fun getSelectedToday(): Boolean
+
+    fun setSelectColor(color: Int = Color.RED)
+    fun getSelectColor(): Int
 }

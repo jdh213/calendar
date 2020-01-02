@@ -29,6 +29,9 @@ class CalendarView : LinearLayout, CalendarSet {
     private var daySize: Float? = null
     private var daySelectPo = -1
 
+    private var selectedToday = false
+    private var selectColor = Color.RED
+
     private var weekArray: ArrayList<TextView> = arrayListOf()
 
     private val days: ArrayList<Date> = ArrayList()
@@ -108,6 +111,17 @@ class CalendarView : LinearLayout, CalendarSet {
             SimpleDateFormat("yyyy년 M월", Locale.KOREAN).format(currentDate.time)
     }
 
+    fun setOnDateSelectedListener(listener: (View, Int, Date) -> Unit) {
+        onDateSelectedListener = object : OnDateSelectedListener {
+            override fun dateSelected(view: View, position: Int, date: Date) {
+                daySelectPo = position
+                updateCalendar()
+                listener(view, position, date)
+            }
+        }
+        updateCalendar()
+    }
+
     /**
     Calendar Interface
      */
@@ -140,9 +154,7 @@ class CalendarView : LinearLayout, CalendarSet {
         }
     }
 
-    override fun getWeekColor(): Int {
-        return weekColor
-    }
+    override fun getWeekColor() = weekColor
 
     override fun setDay(size: Float) {
         daySize = size
@@ -155,24 +167,21 @@ class CalendarView : LinearLayout, CalendarSet {
         updateCalendar()
     }
 
-    override fun getDayColor(): Int {
-        return dayColor
+    override fun getDayColor() = dayColor
+    override fun getDaySize() = daySize
+
+    override fun setSelectedToday(select: Boolean) {
+        selectedToday = select
     }
 
-    override fun getDaySize(): Float? {
-        return daySize
+    override fun getSelectedToday() = selectedToday
+
+
+    override fun setSelectColor(color: Int) {
+        selectColor = color
     }
 
-    fun setOnDateSelectedListener(listener: (View, Int, Date) -> Unit) {
-        onDateSelectedListener = object : OnDateSelectedListener {
-            override fun dateSelected(view: View, position: Int, date: Date) {
-                daySelectPo = position
-                updateCalendar()
-                listener(view, position, date)
-            }
-        }
-        updateCalendar()
-    }
+    override fun getSelectColor() = selectColor
 
     /**
      * CalendarView Day Adapter
@@ -193,10 +202,10 @@ class CalendarView : LinearLayout, CalendarSet {
         private var monthFormatter = SimpleDateFormat("yyyy년 M월", Locale.KOREAN)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view =
+            return ViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.control_calendar_day, parent, false)
-            return ViewHolder(view)
+            )
         }
 
         override fun getItemCount(): Int {
@@ -207,17 +216,22 @@ class CalendarView : LinearLayout, CalendarSet {
             holder.itemView.apply {
                 if (monthFormatter.format(day[position]) == monthFormatter.format(calendar.time)) {
 
-                    day_text.text = dayFormatter.format(day[position])
-
-                    if (dateFormatter.format(day[position]) == dateFormatter.format(Calendar.getInstance().time)) {
-                        day_text.setTextAppearance(R.style.day_bold_textStyle)
-                    } else {
-                        day_text.setTextAppearance(R.style.day_textStyle)
-                    }
-
                     calendarSet.apply {
+
+                        day_text.text = dayFormatter.format(day[position])
+
+                        // 현재 달과 같은 달일경우 && 오늘 강조 플래그에 따라
+                        if (dateFormatter.format(day[position]) == dateFormatter.format(Calendar.getInstance().time)
+                            && getSelectedToday()
+                        ) {
+                            day_text.setTextAppearance(R.style.day_bold_textStyle)
+                        } else {
+                            day_text.setTextAppearance(R.style.day_textStyle)
+                        }
+
+                        // 클릭된 일의 플래그 true 나머지 false
                         if (daySelectFlag[position]) {
-                            day_text.setTextColor(Color.RED)
+                            day_text.setTextColor(getSelectColor())
                         } else {
                             day_text.setTextColor(getDayColor())
                         }
