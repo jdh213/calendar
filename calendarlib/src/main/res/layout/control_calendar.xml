@@ -3,21 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingLeft="30dp"
-        android:paddingTop="12dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="12dp">
+        android:layout_marginTop="26dp">
 
         <ImageView
             android:id="@+id/calendar_prev_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:background="@drawable/arrow_left_black"
             android:contentDescription="@string/prev"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -25,12 +23,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            style="@style/title_textStyle"
             android:id="@+id/calendar_date"
+            style="@style/title_textStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/calendar_prev_button"
             app:layout_constraintRight_toLeftOf="@+id/calendar_next_button"
@@ -38,8 +36,8 @@
 
         <ImageView
             android:id="@+id/calendar_next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:background="@drawable/arrow_right_black"
             android:contentDescription="@string/next"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,69 +49,70 @@
     <LinearLayout
         android:id="@+id/calendar_week_layout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_sun"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/sun" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_mon"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/mon" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_tue"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/tue" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_wed"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/wed" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_thu"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/thu" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_fri"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/fri" />
 
         <TextView
-            style="@style/week_textStyle"
             android:id="@+id/week_sat"
+            style="@style/week_textStyle"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/sat" />
@@ -123,5 +122,6 @@
         android:id="@+id/recycler_calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:overScrollMode="never" />
 </LinearLayout>

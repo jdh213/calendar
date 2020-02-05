@@ -1,9 +1,13 @@
 package com.devroid.calendarlib
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +21,8 @@ import kotlinx.android.synthetic.main.control_calendar_day.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.ceil
+
 
 class CalendarView : LinearLayout, CalendarSet {
 
@@ -24,20 +30,26 @@ class CalendarView : LinearLayout, CalendarSet {
     private var currentDate = Calendar.getInstance()
 
     private var dateColor = context.getColor(R.color.black)
-    private var weekColor = context.getColor(R.color.black)
-    private var dayColor = context.getColor(R.color.black)
+    private var weekColor = context.getColor(R.color.gray)
+    private var dayColor = context.getColor(R.color.gray)
+    private var todayColor = context.getColor(R.color.pink)
     private var daySize: Float? = null
     private var daySelectPo = -1
+    private var lineVisible = true
 
-    private var selectedToday = false
-    private var selectColor = Color.RED
+    private var selectColor = context.getColor(R.color.white)
 
     private var weekArray: ArrayList<TextView> = arrayListOf()
 
     private val days: ArrayList<Date> = ArrayList()
     private val daySelectFlag: ArrayList<Boolean> = ArrayList()
 
+    private var markers: ArrayList<CalendarMarkerModel> = ArrayList()
+    private var markerColor = context.getColor(R.color.light_gray)
+
     private var onDateSelectedListener: OnDateSelectedListener? = null
+
+    private var gestureDetector: GestureDetector? = null
 
     constructor(context: Context?) : super(context)
 
@@ -79,6 +91,9 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     private fun updateCalendar() {
+
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
+
         days.clear()
         daySelectFlag.clear()
 
@@ -93,7 +108,15 @@ class CalendarView : LinearLayout, CalendarSet {
 
         while (days.size < totalDayCount) {
             days.add(calendar.time)
-            daySelectFlag.add(false)
+
+            if (daySelectPo == -1) {
+                daySelectFlag.add(
+                    dateFormatter.format(calendar.time) == dateFormatter.format(Calendar.getInstance().time)
+                )
+            } else {
+                daySelectFlag.add(false)
+            }
+
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
@@ -101,14 +124,23 @@ class CalendarView : LinearLayout, CalendarSet {
             daySelectFlag[daySelectPo] = true
         }
 
-        val calendarAdapter = CalendarViewAdapter(currentDate, days, daySelectFlag, this)
+        val calendarAdapter =
+            CalendarViewAdapter(currentDate, days, daySelectFlag, markers, lineVisible, this)
         calendarAdapter.onDateSelectedListener = onDateSelectedListener
 
         recycler_calendarView.layoutManager = GridLayoutManager(context, 7)
         recycler_calendarView.adapter = calendarAdapter
 
+        recycler_calendarView.setOnTouchListener { v, event ->
+            Log.i("debugLog", "event : $event")
+            gestureDetector?.onTouchEvent(event)
+            true
+        }
+
+
         calendar_date.text =
             SimpleDateFormat("yyyy년 M월", Locale.KOREAN).format(currentDate.time)
+
     }
 
     fun setOnDateSelectedListener(listener: (View, Int, Date) -> Unit) {
@@ -119,6 +151,18 @@ class CalendarView : LinearLayout, CalendarSet {
                 listener(view, position, date)
             }
         }
+    }
+
+    fun setMarkers(markers: ArrayList<CalendarMarkerModel>) {
+        this.markers.clear()
+        this.markers = markers
+    }
+
+    fun setLineVisible(flag: Boolean) {
+        lineVisible = flag
+    }
+
+    fun build() {
         updateCalendar()
     }
 
@@ -158,30 +202,33 @@ class CalendarView : LinearLayout, CalendarSet {
 
     override fun setDay(size: Float) {
         daySize = size
-        updateCalendar()
     }
 
     override fun setDay(size: Float, color: Int) {
         daySize = size
         dayColor = color
-        updateCalendar()
     }
 
     override fun getDayColor() = dayColor
     override fun getDaySize() = daySize
-
-    override fun setSelectedToday(select: Boolean) {
-        selectedToday = select
-    }
-
-    override fun getSelectedToday() = selectedToday
-
 
     override fun setSelectColor(color: Int) {
         selectColor = color
     }
 
     override fun getSelectColor() = selectColor
+
+    override fun setTodayColor(color: Int) {
+        todayColor = color
+    }
+
+    override fun getTodayColor() = todayColor
+
+    override fun setMarkerColor(color: Int) {
+        markerColor = color
+    }
+
+    override fun getMarkerColor() = markerColor
 
     /**
      * CalendarView Day Adapter
@@ -191,6 +238,8 @@ class CalendarView : LinearLayout, CalendarSet {
         private val calendar: Calendar,
         private val day: ArrayList<Date>,
         private val daySelectFlag: ArrayList<Boolean>,
+        private val markers: ArrayList<CalendarMarkerModel>,
+        private val lineVisible: Boolean,
         private val calendarSet: CalendarSet
     ) :
         RecyclerView.Adapter<CalendarViewAdapter.ViewHolder>() {
@@ -200,6 +249,7 @@ class CalendarView : LinearLayout, CalendarSet {
         private var dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
         private var dayFormatter = SimpleDateFormat("d", Locale.KOREAN)
         private var monthFormatter = SimpleDateFormat("yyyy년 M월", Locale.KOREAN)
+        private var circle = ShapeDrawable(OvalShape())
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -214,31 +264,85 @@ class CalendarView : LinearLayout, CalendarSet {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.itemView.apply {
-                if (monthFormatter.format(day[position]) == monthFormatter.format(calendar.time)) {
-
-                    calendarSet.apply {
-
+                calendarSet.apply {
+                    if (monthFormatter.format(day[position]) == monthFormatter.format(calendar.time)) {
                         day_text.text = dayFormatter.format(day[position])
-
-                        // 현재 달과 같은 달일경우 && 오늘 강조 플래그에 따라
-                        if (dateFormatter.format(day[position]) == dateFormatter.format(Calendar.getInstance().time)
-                            && getSelectedToday()
-                        ) {
-                            day_text.setTextAppearance(R.style.day_bold_textStyle)
-                        } else {
-                            day_text.setTextAppearance(R.style.day_textStyle)
-                        }
+                        circle.paint.color = context.getColor(R.color.pink)
+                        day_back.background = circle
 
                         // 클릭된 일의 플래그 true 나머지 false
                         if (daySelectFlag[position]) {
                             day_text.setTextColor(getSelectColor())
+                            day_back.visibility = View.VISIBLE
                         } else {
-                            day_text.setTextColor(getDayColor())
+                            day_back.visibility = View.GONE
+                            day_text.setTextColor(
+                                if (dateFormatter.format(day[position]) == dateFormatter.format(
+                                        Calendar.getInstance().time
+                                    )
+                                ) {
+                                    getTodayColor()
+                                } else {
+                                    getDayColor()
+                                }
+                            )
                         }
 
                         getDaySize()?.let {
                             day_text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, it)
                         }
+
+
+                        val future = if (daySelectFlag[position]) {
+                            false
+                        } else {
+                            day[position].after(Calendar.getInstance().time)
+                        }
+
+                        val markerCircle = GradientDrawable()
+                        markerCircle.setStroke(2, getMarkerColor())
+                        markerCircle.shape = GradientDrawable.OVAL
+
+                        if (markers.size > 0) {
+                            when (markers[position].markerType) {
+                                MarkerType.INVISIBLE -> {
+                                    mark_image.visibility = View.INVISIBLE
+                                }
+
+                                MarkerType.FILL -> {
+                                    mark_image.visibility = View.VISIBLE
+
+                                    markerCircle.setColor(getMarkerColor())
+                                    mark_image.background = markerCircle
+
+                                    if (future) {
+                                        day_text.setTextColor(context.getColor(R.color.black))
+                                    }
+                                }
+
+                                MarkerType.STOKE -> {
+                                    mark_image.visibility = View.VISIBLE
+                                    mark_image.background = markerCircle
+
+                                    if (future) {
+                                        day_text.setTextColor(context.getColor(R.color.black))
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    val rowCount = ceil(day.size / 7.0)
+                    val positionRowCount = position / 7.0
+
+                    if (lineVisible) {
+                        line.visibility = (if (positionRowCount < rowCount - 1.0) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        })
+                    } else {
+                        line.visibility = View.GONE
                     }
 
                     setOnClickListener {
