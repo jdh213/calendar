@@ -330,6 +330,10 @@ class CalendarView : LinearLayout, CalendarSet {
                                 }
                             }
                         }
+
+                        setOnClickListener {
+                            onDateSelectedListener?.dateSelected(it, position, day[position])
+                        }
                     }
 
                     val rowCount = ceil(day.size / 7.0)
@@ -343,10 +347,6 @@ class CalendarView : LinearLayout, CalendarSet {
                         })
                     } else {
                         line.visibility = View.GONE
-                    }
-
-                    setOnClickListener {
-                        onDateSelectedListener?.dateSelected(it, position, day[position])
                     }
                 }
             }
