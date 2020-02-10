@@ -26,15 +26,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         calendarView.apply {
             setLineVisible(true)
             setMarkers(array)
             setOnDateSelectedListener { view, i, date ->
                 Log.i("debugLog", "main position : $i / date : $date")
             }
-
             build()
         }
-
     }
 }
