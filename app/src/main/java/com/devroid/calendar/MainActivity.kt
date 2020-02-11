@@ -21,13 +21,16 @@ class MainActivity : AppCompatActivity() {
         array.add(CalendarMarkerModel(date2, false))
 
         calendarView.apply {
-            setSelectDate(Calendar.getInstance().time)
             setLineVisible(true)
             setMarkers(array)
             setOnDateSelectedListener { _, i, date ->
                 Log.i("debugLog", "main position : $i / date : $date")
             }
             build()
+        }
+
+        today_button.setOnClickListener {
+            calendarView.setSelectDate(Calendar.getInstance().time)
         }
     }
 }

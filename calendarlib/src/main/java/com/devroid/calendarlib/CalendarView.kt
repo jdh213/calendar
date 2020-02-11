@@ -160,6 +160,8 @@ class CalendarView : LinearLayout, CalendarSet {
 
     fun setSelectDate(selectDate: Date) {
         currentDate.time = selectDate
+        daySelectPo = -1
+        updateCalendar()
     }
 
     fun setOnDateSelectedListener(listener: (View, Int, Date?) -> Unit) {
