@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.devroid.calendarlib.CalendarMarkerModel
-import com.devroid.calendarlib.MarkerType
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,24 +14,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse("2020-02-11")
+        val date2 = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse("2020-02-14")
         val array: ArrayList<CalendarMarkerModel> = arrayListOf()
-
-        repeat(50) { i ->
-            when {
-                i % 3 == 0 -> array.add(CalendarMarkerModel(MarkerType.INVISIBLE))
-                i % 3 == 1 -> {
-                    array.add(CalendarMarkerModel(MarkerType.FILL))
-                }
-                else -> {
-                    array.add(CalendarMarkerModel(MarkerType.STOKE))
-                }
-            }
-        }
+        array.add(CalendarMarkerModel(date, true))
+        array.add(CalendarMarkerModel(date2, false))
 
         calendarView.apply {
             setLineVisible(true)
             setMarkers(array)
-            setOnDateSelectedListener { view, i, date ->
+            setOnDateSelectedListener { _, i, date ->
                 Log.i("debugLog", "main position : $i / date : $date")
             }
             build()

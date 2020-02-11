@@ -16,7 +16,7 @@ import kotlin.math.ceil
 
 class CalendarViewAdapter(
     private val calendar: Calendar,
-    private val day: ArrayList<Date>,
+    private val day: ArrayList<Date?>,
     private val daySelectFlag: ArrayList<Boolean>,
     private val markers: ArrayList<CalendarMarkerModel>,
     private val lineVisible: Boolean,
@@ -45,88 +45,90 @@ class CalendarViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.apply {
             calendarSet.apply {
-                if (monthFormatter.format(day[position]) == monthFormatter.format(calendar.time)) {
-                    day_text.text = dayFormatter.format(day[position])
-                    circle.paint.color = context.getColor(R.color.pink)
-                    day_back.background = circle
+                day[position]?.let { date ->
+                    if (monthFormatter.format(date) == monthFormatter.format(calendar.time)) {
+                        day_text.text = dayFormatter.format(date)
+                        circle.paint.color = context.getColor(R.color.pink)
+                        day_back.background = circle
 
-                    // 클릭된 일의 플래그 true 나머지 false
-                    if (daySelectFlag[position]) {
-                        day_text.setTextColor(getSelectColor())
-                        day_back.visibility = View.VISIBLE
-                    } else {
-                        day_back.visibility = View.GONE
-                        day_text.setTextColor(
-                            if (dateFormatter.format(day[position]) == dateFormatter.format(
-                                    Calendar.getInstance().time
-                                )
-                            ) {
-                                getTodayColor()
-                            } else {
-                                getDayColor()
-                            }
-                        )
-                    }
-
-                    getDaySize()?.let {
-                        day_text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, it)
-                    }
-
-
-                    val future = if (daySelectFlag[position]) {
-                        false
-                    } else {
-                        day[position].after(Calendar.getInstance().time)
-                    }
-
-                    val markerCircle = GradientDrawable()
-                    markerCircle.setStroke(2, getMarkerColor())
-                    markerCircle.shape = GradientDrawable.OVAL
-
-                    if (markers.size > 0) {
-                        when (markers[position].markerType) {
-                            MarkerType.INVISIBLE -> {
-                                mark_image.visibility = View.INVISIBLE
-                            }
-
-                            MarkerType.FILL -> {
-                                mark_image.visibility = View.VISIBLE
-
-                                markerCircle.setColor(getMarkerColor())
-                                mark_image.background = markerCircle
-
-                                if (future) {
-                                    day_text.setTextColor(context.getColor(R.color.black))
+                        // 클릭된 일의 플래그 true 나머지 false
+                        if (daySelectFlag[position]) {
+                            day_text.setTextColor(getSelectColor())
+                            day_back.visibility = View.VISIBLE
+                        } else {
+                            day_back.visibility = View.GONE
+                            day_text.setTextColor(
+                                if (dateFormatter.format(date) == dateFormatter.format(
+                                        Calendar.getInstance().time
+                                    )
+                                ) {
+                                    getTodayColor()
+                                } else {
+                                    getDayColor()
                                 }
-                            }
+                            )
+                        }
 
-                            MarkerType.STOKE -> {
+                        getDaySize()?.let {
+                            day_text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, it)
+                        }
+
+
+                        val future = if (daySelectFlag[position]) {
+                            false
+                        } else {
+                            day[position]?.after(Calendar.getInstance().time)
+                        }
+
+                        val markerCircle = GradientDrawable()
+                        markerCircle.setStroke(2, getMarkerColor())
+                        markerCircle.shape = GradientDrawable.OVAL
+
+                        if (markers.size > 0) {
+                            if (markers[position].date == null) {
+                                mark_image.visibility = View.INVISIBLE
+                            } else {
                                 mark_image.visibility = View.VISIBLE
-                                mark_image.background = markerCircle
+                                when (markers[position].complete) {
+                                    true -> {
+                                        markerCircle.setColor(getMarkerColor())
+                                        mark_image.background = markerCircle
+                                        future?.let {
+                                            if (future) {
+                                                day_text.setTextColor(context.getColor(R.color.black))
+                                            }
+                                        }
+                                    }
 
-                                if (future) {
-                                    day_text.setTextColor(context.getColor(R.color.black))
+                                    else -> {
+                                        mark_image.background = markerCircle
+                                        future?.let {
+                                            if (future) {
+                                                day_text.setTextColor(context.getColor(R.color.black))
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
+
+                        setOnClickListener {
+                            onDateSelectedListener?.dateSelected(it, position, day[position])
+                        }
                     }
 
-                    setOnClickListener {
-                        onDateSelectedListener?.dateSelected(it, position, day[position])
-                    }
-                }
+                    val rowCount = ceil(day.size / 7.0)
+                    val positionRowCount = position / 7.0
 
-                val rowCount = ceil(day.size / 7.0)
-                val positionRowCount = position / 7.0
-
-                if (lineVisible) {
-                    line.visibility = (if (positionRowCount < rowCount - 1.0) {
-                        View.VISIBLE
+                    if (lineVisible) {
+                        line.visibility = (if (positionRowCount < rowCount - 1.0) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        })
                     } else {
-                        View.GONE
-                    })
-                } else {
-                    line.visibility = View.GONE
+                        line.visibility = View.GONE
+                    }
                 }
             }
         }

@@ -31,7 +31,7 @@ class CalendarView : LinearLayout, CalendarSet {
 
     private var weekArray: ArrayList<TextView> = arrayListOf()
 
-    private val days: ArrayList<Date> = ArrayList()
+    private val days: ArrayList<Date?> = ArrayList()
     private val daySelectFlag: ArrayList<Boolean> = ArrayList()
 
     private var markers: ArrayList<CalendarMarkerModel> = ArrayList()
@@ -75,11 +75,12 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     private fun updateCalendar() {
-
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
-
         days.clear()
         daySelectFlag.clear()
+
+        val tempMarkers: ArrayList<CalendarMarkerModel> = ArrayList()
+
+        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
 
         val calendar: Calendar = currentDate.clone() as Calendar
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -91,7 +92,9 @@ class CalendarView : LinearLayout, CalendarSet {
         val totalDayCount = monthPrevCount + monthDayCount
 
         while (days.size < totalDayCount) {
-            days.add(calendar.time)
+            val time = dateFormatter.parse(dateFormatter.format(calendar.time))
+            days.add(time)
+            tempMarkers.add(CalendarMarkerModel(null, false))
 
             if (daySelectPo == -1) {
                 daySelectFlag.add(
@@ -108,8 +111,18 @@ class CalendarView : LinearLayout, CalendarSet {
             daySelectFlag[daySelectPo] = true
         }
 
+        if (markers.size > 0) {
+            repeat(markers.size) { i ->
+                markers[i].date?.let { date ->
+                    val markerTime = dateFormatter.parse(dateFormatter.format(date))
+                    tempMarkers[days.indexOf(markerTime)] =
+                        CalendarMarkerModel(markerTime, markers[i].complete)
+                }
+            }
+        }
+
         val calendarAdapter =
-            CalendarViewAdapter(currentDate, days, daySelectFlag, markers, lineVisible, this)
+            CalendarViewAdapter(currentDate, days, daySelectFlag, tempMarkers, lineVisible, this)
         calendarAdapter.onDateSelectedListener = onDateSelectedListener
 
         recycler_calendarView.apply {
@@ -142,9 +155,9 @@ class CalendarView : LinearLayout, CalendarSet {
         updateCalendar()
     }
 
-    fun setOnDateSelectedListener(listener: (View, Int, Date) -> Unit) {
+    fun setOnDateSelectedListener(listener: (View, Int, Date?) -> Unit) {
         onDateSelectedListener = object : OnDateSelectedListener {
-            override fun dateSelected(view: View, position: Int, date: Date) {
+            override fun dateSelected(view: View, position: Int, date: Date?) {
                 daySelectPo = position
                 updateCalendar()
                 listener(view, position, date)

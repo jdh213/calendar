@@ -1,11 +1,8 @@
 package com.devroid.calendarlib
 
-data class CalendarMarkerModel(
-    val markerType: MarkerType = MarkerType.INVISIBLE
-)
+import java.util.*
 
-enum class MarkerType {
-    FILL,
-    STOKE,
-    INVISIBLE
-}
+data class CalendarMarkerModel(
+    val date: Date? = null,
+    val complete: Boolean? = false
+)
