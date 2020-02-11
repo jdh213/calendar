@@ -115,8 +115,10 @@ class CalendarView : LinearLayout, CalendarSet {
             repeat(markers.size) { i ->
                 markers[i].date?.let { date ->
                     val markerTime = dateFormatter.parse(dateFormatter.format(date))
-                    tempMarkers[days.indexOf(markerTime)] =
-                        CalendarMarkerModel(markerTime, markers[i].complete)
+                    val index = days.indexOf(markerTime)
+                    if (index != -1) {
+                        tempMarkers[index] = CalendarMarkerModel(markerTime, markers[i].complete)
+                    }
                 }
             }
         }
