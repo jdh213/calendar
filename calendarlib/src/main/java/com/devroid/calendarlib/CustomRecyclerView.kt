@@ -2,6 +2,7 @@ package com.devroid.calendarlib
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
@@ -31,8 +32,8 @@ class CustomRecyclerView : RecyclerView {
     }
 
     inner class OnSwipeListener : GestureDetector.SimpleOnGestureListener() {
-        private val SWIPE_THRESHOLD = 100
-        private val SWIPE_VELOCITY_THRESHOLD = 100
+        private val SWIPE_THRESHOLD = 50
+        private val SWIPE_VELOCITY_THRESHOLD = 50
 
         override fun onFling(
             e1: MotionEvent?,
@@ -46,8 +47,10 @@ class CustomRecyclerView : RecyclerView {
                 if (abs(diffX) > abs(diffY)) {
                     if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
+                            Log.i("CalendarSwipe", "left")
                             calendarSwipe?.onSwipeLeft()
                         } else {
+                            Log.i("CalendarSwipe", "right")
                             calendarSwipe?.onSwipeRight()
                         }
                     }
@@ -65,6 +68,7 @@ class CustomRecyclerView : RecyclerView {
                  */
             } catch (exception: Exception) {
                 exception.printStackTrace()
+                Log.i("CalendarSwipe", "Swipe Exception : $exception")
             }
             return false
         }
