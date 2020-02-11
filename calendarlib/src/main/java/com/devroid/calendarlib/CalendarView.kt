@@ -157,6 +157,11 @@ class CalendarView : LinearLayout, CalendarSet {
         updateCalendar()
     }
 
+
+    fun setSelectDate(selectDate: Date) {
+        currentDate.time = selectDate
+    }
+
     fun setOnDateSelectedListener(listener: (View, Int, Date?) -> Unit) {
         onDateSelectedListener = object : OnDateSelectedListener {
             override fun dateSelected(view: View, position: Int, date: Date?) {
