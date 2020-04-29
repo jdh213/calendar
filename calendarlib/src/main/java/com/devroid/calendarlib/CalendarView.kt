@@ -147,27 +147,16 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     private fun prevMonth() {
-        val nowTime = Calendar.getInstance().time
         currentDate.add(Calendar.MONTH, -1)
-        if (nowTime == currentDate.time) {
-            setSelectDate(nowTime)
-        } else {
-            daySelectPo = -1
-            updateCalendar()
-        }
-
+        daySelectPo = -1
+        updateCalendar()
         onMonthChangeListener?.prevMonth(currentDate.time)
     }
 
     private fun nextMonth() {
-        val nowTime = Calendar.getInstance().time
         currentDate.add(Calendar.MONTH, 1)
-        if (nowTime == currentDate.time) {
-            setSelectDate(nowTime)
-        } else {
-            daySelectPo = -1
-            updateCalendar()
-        }
+        daySelectPo = -1
+        updateCalendar()
         onMonthChangeListener?.nextMonth(currentDate.time)
     }
 
