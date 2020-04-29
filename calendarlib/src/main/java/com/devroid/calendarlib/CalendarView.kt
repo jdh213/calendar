@@ -202,6 +202,22 @@ class CalendarView : LinearLayout, CalendarSet {
         lineVisible = flag
     }
 
+    fun setVisiblePrevButton() {
+        calendar_prev_button.visibility = View.VISIBLE
+    }
+
+    fun setInVisiblePrevButton() {
+        calendar_prev_button.visibility = View.INVISIBLE
+    }
+
+    fun setVisibleNextButton() {
+        calendar_next_button.visibility = View.VISIBLE
+    }
+
+    fun setInVisibleNextButton() {
+        calendar_next_button.visibility = View.INVISIBLE
+    }
+
     fun build() {
         updateCalendar()
     }
