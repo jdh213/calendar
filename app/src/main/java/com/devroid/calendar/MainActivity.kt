@@ -24,7 +24,10 @@ class MainActivity : AppCompatActivity() {
             setLineVisible(true)
             setMarkers(array)
             setOnDateSelectedListener { _, i, date ->
-                Log.i("debugLog", "main position : $i / date : $date")
+                Log.i("debugLog", "selected position : $i / date : $date")
+            }
+            setOnMonthChangeListener { date ->
+                Log.i("debugLog", "change month date : $date")
             }
             build()
         }

@@ -38,6 +38,7 @@ class CalendarView : LinearLayout, CalendarSet {
     private var markerColor = context.getColor(R.color.light_gray)
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
+    private var onMonthChangeListener: OnMonthChangeListener? = null
 
     constructor(context: Context?) : super(context)
 
@@ -75,12 +76,12 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     private fun updateCalendar() {
+        //Log.i("debugLog", "setSelectDate : ${currentDate.time}")
         days.clear()
         daySelectFlag.clear()
 
-        val tempMarkers: ArrayList<CalendarMarkerModel> = ArrayList()
-
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
+        val tempMarkers: ArrayList<CalendarMarkerModel> = ArrayList()
 
         val calendar: Calendar = currentDate.clone() as Calendar
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -146,15 +147,28 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     private fun prevMonth() {
+        val nowTime = Calendar.getInstance().time
         currentDate.add(Calendar.MONTH, -1)
-        daySelectPo = -1
-        updateCalendar()
+        if (nowTime == currentDate.time) {
+            setSelectDate(nowTime)
+        } else {
+            daySelectPo = -1
+            updateCalendar()
+        }
+
+        onMonthChangeListener?.prevMonth(currentDate.time)
     }
 
     private fun nextMonth() {
+        val nowTime = Calendar.getInstance().time
         currentDate.add(Calendar.MONTH, 1)
-        daySelectPo = -1
-        updateCalendar()
+        if (nowTime == currentDate.time) {
+            setSelectDate(nowTime)
+        } else {
+            daySelectPo = -1
+            updateCalendar()
+        }
+        onMonthChangeListener?.nextMonth(currentDate.time)
     }
 
 
@@ -168,8 +182,24 @@ class CalendarView : LinearLayout, CalendarSet {
         onDateSelectedListener = object : OnDateSelectedListener {
             override fun dateSelected(view: View, position: Int, date: Date?) {
                 daySelectPo = position
+//                date?.let {
+//                    currentDate.time = it
+//                    Log.i("debugLog", "setSelectDate : ${currentDate.time}")
+//                }
                 updateCalendar()
                 listener(view, position, date)
+            }
+        }
+    }
+
+    fun setOnMonthChangeListener(listener: (Date?) -> Unit) {
+        onMonthChangeListener = object : OnMonthChangeListener {
+            override fun prevMonth(date: Date?) {
+                listener(date)
+            }
+
+            override fun nextMonth(date: Date?) {
+                listener(date)
             }
         }
     }

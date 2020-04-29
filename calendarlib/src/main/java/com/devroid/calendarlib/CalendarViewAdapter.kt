@@ -73,7 +73,6 @@ class CalendarViewAdapter(
                             day_text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, it)
                         }
 
-
                         val future = if (daySelectFlag[position]) {
                             false
                         } else {
