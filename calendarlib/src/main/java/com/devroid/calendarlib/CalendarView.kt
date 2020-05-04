@@ -42,6 +42,9 @@ class CalendarView : LinearLayout, CalendarSet {
 
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
 
+    private var prevFlag = true
+    private var nextFlag = true
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -134,11 +137,15 @@ class CalendarView : LinearLayout, CalendarSet {
             adapter = calendarAdapter
             setSwipeListener(object : CalendarSwipe {
                 override fun onSwipeLeft() {
-                    prevMonth()
+                    if (prevFlag) {
+                        prevMonth()
+                    }
                 }
 
                 override fun onSwipeRight() {
-                    nextMonth()
+                    if (nextFlag) {
+                        nextMonth()
+                    }
                 }
             })
         }
@@ -207,18 +214,22 @@ class CalendarView : LinearLayout, CalendarSet {
 
     fun setVisiblePrevButton() {
         calendar_prev_button.visibility = View.VISIBLE
+        prevFlag = true
     }
 
     fun setInVisiblePrevButton() {
         calendar_prev_button.visibility = View.INVISIBLE
+        prevFlag = false
     }
 
     fun setVisibleNextButton() {
         calendar_next_button.visibility = View.VISIBLE
+        nextFlag = true
     }
 
     fun setInVisibleNextButton() {
         calendar_next_button.visibility = View.INVISIBLE
+        nextFlag = false
     }
 
     fun build() {
