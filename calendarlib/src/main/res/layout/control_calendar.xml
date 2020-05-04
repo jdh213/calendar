@@ -124,5 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:overScrollMode="never" />
+        android:overScrollMode="never"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
 </LinearLayout>

@@ -32,8 +32,8 @@ class CustomRecyclerView : RecyclerView {
     }
 
     inner class OnSwipeListener : GestureDetector.SimpleOnGestureListener() {
-        private val SWIPE_THRESHOLD = 100
-        private val SWIPE_VELOCITY_THRESHOLD = 100
+        private val SWIPE_THRESHOLD = 50
+        private val SWIPE_VELOCITY_THRESHOLD = 50
 
         override fun onFling(
             e1: MotionEvent?,
@@ -56,18 +56,16 @@ class CustomRecyclerView : RecyclerView {
                             true
                         }
                     }
-                }
-                /*else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
-                        Log.i("debugLog", "bottom")
-                        onSwipeBottom()
+                        Log.i("CalendarSwipe", "top")
+                        calendarSwipe?.onSwipeTop()
                     } else {
-                        Log.i("debugLog", "top")
-                        onSwipeTop()
+
+                        Log.i("CalendarSwipe", "bottom")
+                        calendarSwipe?.onSwipeBottom()
                     }
                 }
-
-                 */
             } catch (exception: Exception) {
                 exception.printStackTrace()
                 Log.i("CalendarSwipe", "Swipe Exception : $exception")

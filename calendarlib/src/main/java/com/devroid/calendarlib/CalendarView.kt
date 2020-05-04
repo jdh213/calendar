@@ -40,6 +40,8 @@ class CalendarView : LinearLayout, CalendarSet {
     private var onDateSelectedListener: OnDateSelectedListener? = null
     private var onMonthChangeListener: OnMonthChangeListener? = null
 
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -80,7 +82,6 @@ class CalendarView : LinearLayout, CalendarSet {
         days.clear()
         daySelectFlag.clear()
 
-        val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
         val tempMarkers: ArrayList<CalendarMarkerModel> = ArrayList()
 
         val calendar: Calendar = currentDate.clone() as Calendar
@@ -188,7 +189,9 @@ class CalendarView : LinearLayout, CalendarSet {
             }
 
             override fun nextMonth(date: Date?) {
-                listener(date)
+                date?.let {
+                    listener(date)
+                }
             }
         }
     }
