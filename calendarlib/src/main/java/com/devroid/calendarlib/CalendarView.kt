@@ -34,7 +34,7 @@ class CalendarView : LinearLayout, CalendarSet {
     private val days: ArrayList<Date?> = ArrayList()
     private val daySelectFlag: ArrayList<Boolean> = ArrayList()
 
-    private var markers: ArrayList<CalendarMarkerModel> = ArrayList()
+    private var markerArrayList: ArrayList<CalendarMarkerModel> = ArrayList()
     private var markerColor = context.getColor(R.color.light_gray)
 
     private var onDateSelectedListener: OnDateSelectedListener? = null
@@ -116,13 +116,14 @@ class CalendarView : LinearLayout, CalendarSet {
             daySelectFlag[daySelectPo] = true
         }
 
-        if (markers.size > 0) {
-            repeat(markers.size) { i ->
-                markers[i].date?.let { date ->
+        if (markerArrayList.size > 0) {
+            repeat(markerArrayList.size) { i ->
+                markerArrayList[i].date?.let { date ->
                     val markerTime = dateFormatter.parse(dateFormatter.format(date))
                     val index = days.indexOf(markerTime)
                     if (index != -1) {
-                        tempMarkers[index] = CalendarMarkerModel(markerTime, markers[i].complete)
+                        tempMarkers[index] =
+                            CalendarMarkerModel(markerTime, markerArrayList[i].complete)
                     }
                 }
             }
@@ -204,8 +205,8 @@ class CalendarView : LinearLayout, CalendarSet {
     }
 
     fun setMarkers(markers: ArrayList<CalendarMarkerModel>) {
-        this.markers.clear()
-        this.markers = markers
+        this.markerArrayList.clear()
+        this.markerArrayList.addAll(markers)
     }
 
     fun setLineVisible(flag: Boolean) {
