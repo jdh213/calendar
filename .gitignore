@@ -40,3 +40,9 @@ Thumbs.db
 .idea/tasks.xml
 .idea/datasources.xml
 .idea/dataSources.ids
+
+*.iml
+.idea
+captures
+.externalNativeBuild
+/app/fabric.properties
