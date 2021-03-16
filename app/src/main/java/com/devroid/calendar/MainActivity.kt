@@ -1,9 +1,10 @@
 package com.devroid.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.devroid.calendarlib.CalendarMarkerModel
+import com.devroid.calendarlib.calender.CalendarMarkerModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,6 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         today_button.setOnClickListener {
             calendarView.setSelectDate(Calendar.getInstance().time)
+        }
+
+        vertical_button.setOnClickListener {
+            startActivity(Intent(this, VerticalActivity::class.java))
         }
     }
 }

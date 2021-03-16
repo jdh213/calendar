@@ -1,4 +1,4 @@
-package com.devroid.calendarlib
+package com.devroid.calendarlib.calender
 
 interface CalendarSet {
     fun setTitle(size: Float) {}

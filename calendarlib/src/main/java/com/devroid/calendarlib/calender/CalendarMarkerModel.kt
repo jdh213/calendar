@@ -1,4 +1,4 @@
-package com.devroid.calendarlib
+package com.devroid.calendarlib.calender
 
 import java.util.*
 

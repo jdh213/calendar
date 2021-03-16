@@ -1,4 +1,4 @@
-package com.devroid.calendarlib
+package com.devroid.calendarlib.calender
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.devroid.calendarlib.R
 import kotlinx.android.synthetic.main.control_calendar.view.*
 import java.text.SimpleDateFormat
 import java.util.*

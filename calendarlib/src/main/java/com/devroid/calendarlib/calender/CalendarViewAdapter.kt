@@ -1,4 +1,4 @@
-package com.devroid.calendarlib
+package com.devroid.calendarlib.calender
 
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.devroid.calendarlib.R
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.control_calendar_day.view.*
 import java.text.SimpleDateFormat
