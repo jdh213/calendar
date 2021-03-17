@@ -1,6 +1,9 @@
 package com.devroid.calendarlib.verticalCalendar
 
-interface VerticalCalendarInterface {
+interface OnDayClickListener {
     fun onClick(day: Int, month: Int, year: Int) {}
-    fun onScroll() {}
+}
+
+interface OnScrollListener {
+    fun onScroll(date: String) {}
 }

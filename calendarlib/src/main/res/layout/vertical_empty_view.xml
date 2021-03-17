@@ -5,9 +5,8 @@
     android:layout_height="50dp">
 
     <TextView
-        android:id="@+id/dayText"
+        android:id="@+id/emptyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="10dp" />
+        android:layout_gravity="center" />
 </FrameLayout>
