@@ -12,17 +12,23 @@ class VerticalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vertical)
 
-        topText.text = calendarView.getNowDate()
+        //topText.text = calendarView.getNowDate()
 
-        calendarView.onClickListener { day, month, year ->
-            Log.i("debugLog", "day = $day / $month / $year")
-        }
+        calendarView.apply {
+            setCalendarRange(1, -12, false)
+            //setCalendarRange(-12, 1, true)
+            setEndScroll(true)
 
-        calendarView.onScrollListener { date ->
-            Log.i("debugLog", "date = $date")
-            date?.let {
-                if (it.isNotEmpty())
-                    topText.text = it
+            onClickListener { day, month, year ->
+                Log.i("debugLog", "day = $year / $month / $day")
+            }
+
+            onScrollListener { date ->
+                Log.i("debugLog", "date = $date")
+                date?.let {
+                    if (it.isNotEmpty())
+                        topText.text = it
+                }
             }
         }
     }

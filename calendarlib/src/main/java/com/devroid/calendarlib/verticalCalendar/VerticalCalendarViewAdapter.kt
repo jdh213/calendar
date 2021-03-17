@@ -33,21 +33,23 @@ class VerticalCalendarViewAdapter(
             "empty" -> {
                 EMPTY_TYPE
             }
-            "day" -> {
+            else -> {
                 DAY_TYPE
             }
-            else -> {
-                super.getItemViewType(position)
-            }
+
         }
     }
+
 
     override fun getItemCount(): Int {
         return calendarList.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             0 -> {
                 MonthHolder(
@@ -77,11 +79,10 @@ class VerticalCalendarViewAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val viewType = getItemViewType(position)
         holder.itemView.let { view ->
             calendarList[position].apply {
                 calendar?.let { calendar ->
-                    when (viewType) {
+                    when (getItemViewType(position)) {
                         0 -> {
                             val params =
                                 view.layoutParams as StaggeredGridLayoutManager.LayoutParams
@@ -140,11 +141,10 @@ class VerticalCalendarViewAdapter(
             6 -> {
                 view.monthText7.text = date
             }
-
         }
     }
 
-    fun monthTextClear(view: View) {
+    private fun monthTextClear(view: View) {
         view.monthText1.text = ""
         view.monthText2.text = ""
         view.monthText3.text = ""
