@@ -7,23 +7,23 @@
 
     <com.devroid.calendarlib.verticalCalendar.ActivityRingProgressBar
         android:id="@+id/dayGraph"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:centerMaxProgress="100"
-        app:circleThickness="0.5"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_gravity="center"
+        app:circleThickness="0.6"
         app:hasEmptyProgressBar="true"
         app:hasOneProgressView="false"
         app:hasTwoProgressView="true"
-        app:innerMaxProgress="100"
         app:isAnimationOn="false"
-        app:outerMaxProgress="100"
         app:useRoundedCorner="true" />
 
     <TextView
         android:id="@+id/dayText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/black"
         android:textSize="12dp" />
 
 </FrameLayout>

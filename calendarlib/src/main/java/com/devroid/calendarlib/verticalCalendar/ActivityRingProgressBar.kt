@@ -46,7 +46,7 @@ open class ActivityRingProgressBar : View {
     private var hasOneProgressView = false
     private var hasTwoProgressView = false
     private var mCircleThickness = 1f
-    private var mCirclePadding = 10f
+    private var mCirclePadding = 6f
 
     /**
      * Data of the Outer View

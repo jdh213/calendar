@@ -14,13 +14,24 @@ class VerticalActivity : AppCompatActivity() {
         setContentView(R.layout.activity_vertical)
 
         calendarView.apply {
-
-            val test: ArrayList<ProgressData> = arrayListOf()
+            val progress: ArrayList<ProgressData> = arrayListOf()
             repeat(500) {
-                test.add(ProgressData(currentCalProgress = 10, currentGoalProgress = 30))
+                progress.add(
+                    ProgressData(
+                        currentCalProgress = 50,
+                        totalCalProgress = 100,
+                        currentGoalProgress = 50,
+                        totalGoalProgress = 100
+                    )
+                )
             }
-            setCalendarRange(0, -12, false, test)
+            //이번달부터 end달까지
+            setCalendarRange(0, -12, false, progress)
+
+            //역순
             //setCalendarRange(-12, 1, true)
+
+            //스크롤 마지막으로
             //setEndScroll(true)
 
             onClickListener { day, month, year ->

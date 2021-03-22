@@ -1,6 +1,7 @@
 package com.devroid.calendarlib.verticalCalendar
 
-import android.util.Log
+import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,11 @@ import java.util.*
 
 class VerticalCalendarViewAdapter(
     private val calendarList: ArrayList<VerticalCalendarData>,
-    private val calendarProgressData: ArrayList<ProgressData>
+    private val calendarProgressData: ArrayList<ProgressData>,
+    private val monthSize: Float,
+    private val monthColor: Int = Color.BLACK,
+    private val daySize: Float,
+    private val dayColor: Int = Color.BLACK
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickListener: OnDayClickListener? = null
@@ -95,15 +100,18 @@ class VerticalCalendarViewAdapter(
                         }
                         2 -> {
                             view.dayText.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+                            view.dayText.setTextSize(TypedValue.COMPLEX_UNIT_PX, daySize)
+                            view.dayText.setTextColor(dayColor)
 
                             try {
                                 calendarProgressData[position].apply {
-                                    Log.i("debugLog", "it[position] : $this")
                                     view.dayGraph.apply {
                                         setOuterProgressColor(arrayListOf(calColor))
+                                        setMaxProgressOuterView(totalCalProgress)
                                         setOuterProgress(currentCalProgress)
 
                                         setCenterProgressColor(arrayListOf(goalColor))
+                                        setMaxProgressCenterView(totalGoalProgress)
                                         setCenterProgress(currentGoalProgress)
                                     }
                                 }
@@ -136,30 +144,44 @@ class VerticalCalendarViewAdapter(
         when (data.monthPosition) {
             0 -> {
                 view.monthText1.text = date
+                view.monthText1.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText1.setTextColor(monthColor)
             }
 
             1 -> {
                 view.monthText2.text = date
+                view.monthText2.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText2.setTextColor(monthColor)
             }
 
             2 -> {
                 view.monthText3.text = date
+                view.monthText3.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText3.setTextColor(monthColor)
             }
 
             3 -> {
                 view.monthText4.text = date
+                view.monthText4.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText4.setTextColor(monthColor)
             }
 
             4 -> {
                 view.monthText5.text = date
+                view.monthText5.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText5.setTextColor(monthColor)
             }
 
             5 -> {
                 view.monthText6.text = date
+                view.monthText6.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText6.setTextColor(monthColor)
             }
 
             6 -> {
                 view.monthText7.text = date
+                view.monthText7.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                view.monthText7.setTextColor(monthColor)
             }
         }
     }

@@ -1,31 +1,39 @@
 <resources>
     <declare-styleable name="ActivityRingProgressBar">
         <!--outer view-->
-        <attr name="outerProgress" format="integer"/>
-        <attr name="outerProgressColor" format="color"/>
-        <attr name="outerProgressStartAngle" format="integer"/>
-        <attr name="outerMaxProgress" format="integer"/>
-        <attr name="outerEmptyProgressColor" format="color"/>
+        <attr name="outerProgress" format="integer" />
+        <attr name="outerProgressColor" format="color" />
+        <attr name="outerProgressStartAngle" format="integer" />
+        <attr name="outerMaxProgress" format="integer" />
+        <attr name="outerEmptyProgressColor" format="color" />
         <!--center view-->
-        <attr name="centerProgress" format="integer"/>
-        <attr name="centerProgressColor" format="color"/>
-        <attr name="centerProgressStartAngle" format="integer"/>
-        <attr name="centerMaxProgress" format="integer"/>
-        <attr name="centerEmptyProgressColor" format="color"/>
+        <attr name="centerProgress" format="integer" />
+        <attr name="centerProgressColor" format="color" />
+        <attr name="centerProgressStartAngle" format="integer" />
+        <attr name="centerMaxProgress" format="integer" />
+        <attr name="centerEmptyProgressColor" format="color" />
         <!--inner view-->
-        <attr name="innerProgress" format="integer"/>
-        <attr name="innerProgressColor" format="color"/>
-        <attr name="innerProgressStartAngle" format="integer"/>
-        <attr name="innerMaxProgress" format="integer"/>
-        <attr name="innerEmptyProgressColor" format="color"/>
+        <attr name="innerProgress" format="integer" />
+        <attr name="innerProgressColor" format="color" />
+        <attr name="innerProgressStartAngle" format="integer" />
+        <attr name="innerMaxProgress" format="integer" />
+        <attr name="innerEmptyProgressColor" format="color" />
         <!-- Common Attrs-->
-        <attr name="useRoundedCorner" format="boolean"/>
-        <attr name="isAnimationOn" format="boolean"/>
-        <attr name="hasElevation" format="boolean"/>
-        <attr name="hasEmptyProgressBar" format="boolean"/>
-        <attr name="hasOneProgressView" format="boolean"/>
-        <attr name="hasTwoProgressView" format="boolean"/>
-        <attr name="circleThickness" format="float"/>
-        <attr name="circlePadding" format="float"/>
+        <attr name="useRoundedCorner" format="boolean" />
+        <attr name="isAnimationOn" format="boolean" />
+        <attr name="hasElevation" format="boolean" />
+        <attr name="hasEmptyProgressBar" format="boolean" />
+        <attr name="hasOneProgressView" format="boolean" />
+        <attr name="hasTwoProgressView" format="boolean" />
+        <attr name="circleThickness" format="float" />
+        <attr name="circlePadding" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="VerticalCalendarView">
+        <attr name="dayTextColor" format="color" />
+        <attr name="dayTextSize" format="dimension" />
+
+        <attr name="monthTextColor" format="color" />
+        <attr name="monthTextSize" format="dimension" />
     </declare-styleable>
 </resources>

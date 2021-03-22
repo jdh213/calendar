@@ -2,6 +2,8 @@ package com.devroid.calendarlib.verticalCalendar
 
 import android.app.Service
 import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -30,11 +32,23 @@ class VerticalCalendarView : FrameLayout {
     private var endRange = 1
     private var reverse = false
 
+    private var monthTextSize = 14f
+    private var monthTextColor = Color.BLACK
+
+    private var dayTextSize = 12f
+    private var dayTextColor = Color.BLACK
+
     constructor(context: Context) : super(context) {
         init()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initAttr(
+            context.obtainStyledAttributes(
+                attrs,
+                R.styleable.VerticalCalendarView
+            )
+        )
         init()
     }
 
@@ -43,15 +57,44 @@ class VerticalCalendarView : FrameLayout {
         attrs,
         defStyle
     ) {
+        initAttr(
+            context.obtainStyledAttributes(
+                attrs,
+                R.styleable.VerticalCalendarView
+            )
+        )
         init()
+    }
+
+    private fun initAttr(typedArray: TypedArray) {
+        monthTextSize =
+            typedArray.getDimension(
+                R.styleable.VerticalCalendarView_monthTextSize,
+                monthTextSize
+            )
+        monthTextColor =
+            typedArray.getColor(R.styleable.VerticalCalendarView_monthTextColor, monthTextColor)
+
+        dayTextSize =
+            typedArray.getDimension(
+                R.styleable.VerticalCalendarView_dayTextSize,
+                dayTextSize
+            )
+        dayTextColor =
+            typedArray.getColor(R.styleable.VerticalCalendarView_dayTextColor, dayTextColor)
     }
 
     private fun init() {
         val content = layoutInflater.inflate(R.layout.vertical_calendar_view, null, false)
         addView(content)
 
-        calendarAdapter = VerticalCalendarViewAdapter(calendarList, calendarDataList)
-        calendarAdapter?.setHasStableIds(true)
+        calendarAdapter = VerticalCalendarViewAdapter(
+            calendarList, calendarDataList,
+            monthTextSize, monthTextColor,
+            dayTextSize, dayTextColor
+        )
+
+        //calendarAdapter?.setHasStableIds(true)
 
         rl_calendar.apply {
             layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
