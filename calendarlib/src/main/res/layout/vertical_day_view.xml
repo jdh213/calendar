@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/weeks_container"
     android:layout_width="50dp"
     android:layout_height="50dp">
+
+    <com.devroid.calendarlib.verticalCalendar.ActivityRingProgressBar
+        android:id="@+id/dayGraph"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:centerMaxProgress="100"
+        app:circleThickness="0.5"
+        app:hasEmptyProgressBar="true"
+        app:hasOneProgressView="false"
+        app:hasTwoProgressView="true"
+        app:innerMaxProgress="100"
+        app:isAnimationOn="false"
+        app:outerMaxProgress="100"
+        app:useRoundedCorner="true" />
 
     <TextView
         android:id="@+id/dayText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="10dp" />
+        android:textSize="12dp" />
+
 </FrameLayout>

@@ -1,5 +1,6 @@
 package com.devroid.calendarlib.verticalCalendar
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,8 @@ import java.util.*
 
 
 class VerticalCalendarViewAdapter(
-    private val calendarList: ArrayList<VerticalCalendarData>
+    private val calendarList: ArrayList<VerticalCalendarData>,
+    private val calendarProgressData: ArrayList<ProgressData>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickListener: OnDayClickListener? = null
@@ -36,10 +38,8 @@ class VerticalCalendarViewAdapter(
             else -> {
                 DAY_TYPE
             }
-
         }
     }
-
 
     override fun getItemCount(): Int {
         return calendarList.size
@@ -95,6 +95,26 @@ class VerticalCalendarViewAdapter(
                         }
                         2 -> {
                             view.dayText.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+
+                            try {
+                                calendarProgressData[position].apply {
+                                    Log.i("debugLog", "it[position] : $this")
+                                    view.dayGraph.apply {
+                                        setOuterProgressColor(arrayListOf(calColor))
+                                        setOuterProgress(currentCalProgress)
+
+                                        setCenterProgressColor(arrayListOf(goalColor))
+                                        setCenterProgress(currentGoalProgress)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                view.dayGraph.apply {
+                                    setOuterProgress(0)
+                                    setCenterProgress(0)
+                                }
+                            }
+
 
                             view.setOnClickListener {
                                 onClickListener?.onClick(

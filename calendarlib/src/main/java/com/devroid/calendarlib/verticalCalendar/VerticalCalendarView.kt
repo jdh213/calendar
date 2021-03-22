@@ -18,6 +18,8 @@ class VerticalCalendarView : FrameLayout {
         context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     private val calendarList: ArrayList<VerticalCalendarData> = arrayListOf()
+    private val calendarDataList: ArrayList<ProgressData> = arrayListOf()
+
     private var calendarAdapter: VerticalCalendarViewAdapter? = null
 
     private var onScrollListener: OnScrollListener? = null
@@ -48,13 +50,12 @@ class VerticalCalendarView : FrameLayout {
         val content = layoutInflater.inflate(R.layout.vertical_calendar_view, null, false)
         addView(content)
 
-        calendarAdapter = VerticalCalendarViewAdapter(calendarList)
+        calendarAdapter = VerticalCalendarViewAdapter(calendarList, calendarDataList)
         calendarAdapter?.setHasStableIds(true)
 
         rl_calendar.apply {
             layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
             adapter = calendarAdapter
-
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -104,7 +105,10 @@ class VerticalCalendarView : FrameLayout {
     /**
      * 리버스 달력 세팅
      */
-    private fun setReverseCalendarList(start: Int, end: Int) {
+    private fun setReverseCalendarList(
+        start: Int,
+        end: Int
+    ) {
         calendarList.clear()
 
         val nowCalendar = GregorianCalendar()
@@ -125,7 +129,7 @@ class VerticalCalendarView : FrameLayout {
             val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
             val endDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-            calendarList.add(VerticalCalendarData("month", calendar, 0))
+            calendarList.add(VerticalCalendarData("month", calendar))
 
             for (j in 0 until dayOfWeek) {
                 calendarList.add(VerticalCalendarData("empty", null))
@@ -267,9 +271,16 @@ class VerticalCalendarView : FrameLayout {
     /**
      * 달력 시작 월~ 종료 월 변경
      */
-    fun setCalendarRange(start: Int, end: Int, reverse: Boolean) {
+    fun setCalendarRange(
+        start: Int,
+        end: Int,
+        reverse: Boolean,
+        progressData: ArrayList<ProgressData>
+    ) {
         startRange = start
         endRange = end
+
+        calendarDataList.addAll(progressData)
 
         this.reverse = reverse
 
