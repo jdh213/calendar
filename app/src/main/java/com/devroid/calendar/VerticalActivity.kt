@@ -15,9 +15,9 @@ class VerticalActivity : AppCompatActivity() {
         //topText.text = calendarView.getNowDate()
 
         calendarView.apply {
-            setCalendarRange(1, -12, false)
+            setCalendarRange(0, -12, false)
             //setCalendarRange(-12, 1, true)
-            setEndScroll(true)
+            //setEndScroll(true)
 
             onClickListener { day, month, year ->
                 Log.i("debugLog", "day = $year / $month / $day")

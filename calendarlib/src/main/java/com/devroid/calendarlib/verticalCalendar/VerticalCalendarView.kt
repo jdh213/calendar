@@ -259,7 +259,7 @@ class VerticalCalendarView : FrameLayout {
      */
     fun setEndScroll(end: Boolean = true) {
         if (end && reverse) {
-            //rl_calendar.scrollToPosition(calendarList.size - 20)
+            //l_calendar.scrollToPosition(calendarList.size - 20)
             rl_calendar.smoothScrollToPosition(calendarList.size - 20)
         }
     }
