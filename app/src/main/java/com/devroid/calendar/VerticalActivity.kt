@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_vertical.*
 
 class VerticalActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vertical)
@@ -26,8 +25,8 @@ class VerticalActivity : AppCompatActivity() {
                 )
             }
             //이번달부터 end달까지
-            setCalendarRange(0, -12, false, progress)
-
+            setCalendarRange(1, -12, false, progress)
+            setScroll(400)
             //역순
             //setCalendarRange(-12, 1, true)
 

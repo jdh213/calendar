@@ -4,8 +4,11 @@ import android.app.Service
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -305,10 +308,22 @@ class VerticalCalendarView : FrameLayout {
      * true = 스크롤 마지막으로
      */
     fun setEndScroll(end: Boolean = true) {
+        rl_calendar.visibility = View.INVISIBLE
         if (end && reverse) {
-            //l_calendar.scrollToPosition(calendarList.size - 20)
-            rl_calendar.smoothScrollToPosition(calendarList.size - 20)
+            //rl_calendar.scrollToPosition(calendarList.size - 20)
+            rl_calendar.smoothScrollToPosition(calendarList.size - 20).run {
+                visibility = View.VISIBLE
+            }
         }
+    }
+
+    /**
+     * 스크롤 값만큼 이동
+     */
+    fun setScroll(scrollY: Int) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            rl_calendar.scrollBy(0, scrollY)
+        }, 100)
     }
 
     /**
