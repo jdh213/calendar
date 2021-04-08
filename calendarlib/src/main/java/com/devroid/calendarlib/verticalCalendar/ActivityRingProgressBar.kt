@@ -625,7 +625,9 @@ open class ActivityRingProgressBar : View {
     Set the   Progress of Outer Progress View
      */
     fun setOuterProgress(progress: Int) {
-        if (progress != 0) mOuterProgress = progress
+        //if (progress != 0) mOuterProgress = progress
+        mOuterProgress = progress
+
         val animator =
             ValueAnimator.ofFloat(
                 mSweepAngleOuterView.toFloat(),
@@ -768,7 +770,8 @@ open class ActivityRingProgressBar : View {
      */
     fun setCenterProgress(progress: Int) {
         if (!(hasOneProgressView && !hasTwoProgressView)) {
-            if (progress != 0) mCenterProgress = progress
+            //if (progress != 0) mCenterProgress = progress
+            mCenterProgress = progress
             val animator =
                 ValueAnimator.ofFloat(
                     mSweepAngleCenterView.toFloat(),

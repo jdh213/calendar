@@ -14,24 +14,19 @@ class VerticalActivity : AppCompatActivity() {
 
         calendarView.apply {
             val progress: ArrayList<ProgressData> = arrayListOf()
-            repeat(500) {
+            repeat(111) {
                 progress.add(
                     ProgressData(
-                        currentCalProgress = 50,
+                        currentCalProgress = 10,
                         totalCalProgress = 100,
-                        currentGoalProgress = 50,
+                        currentGoalProgress = 10,
                         totalGoalProgress = 100
                     )
                 )
             }
             //이번달부터 end달까지
-            setCalendarRange(1, -12, false, progress)
-            setScroll(400)
-            //역순
-            //setCalendarRange(-12, 1, true)
-
-            //스크롤 마지막으로
-            //setEndScroll(true)
+            setCalendarProgress(1, -12, progress)
+            setScroll(600)
 
             onClickListener { day, month, year ->
                 Log.i("debugLog", "day = $year / $month / $day")

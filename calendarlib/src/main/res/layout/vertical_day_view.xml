@@ -10,11 +10,17 @@
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:layout_gravity="center"
+        app:centerMaxProgress="0"
+        app:centerProgress="0"
         app:circleThickness="0.6"
         app:hasEmptyProgressBar="true"
         app:hasOneProgressView="false"
         app:hasTwoProgressView="true"
+        app:innerMaxProgress="0"
+        app:innerProgress="0"
         app:isAnimationOn="false"
+        app:outerMaxProgress="0"
+        app:outerProgress="0"
         app:useRoundedCorner="true" />
 
     <TextView

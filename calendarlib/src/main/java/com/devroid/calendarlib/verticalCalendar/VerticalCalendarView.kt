@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -31,9 +30,8 @@ class VerticalCalendarView : FrameLayout {
 
     private var dateFormatter = SimpleDateFormat("yyyy. MM", Locale.KOREAN)
 
-    private var startRange = -12
-    private var endRange = 1
-    private var reverse = false
+    private var startRange = 1
+    private var endRange = -12
 
     private var monthTextSize = 14f
     private var monthTextColor = Color.BLACK
@@ -92,7 +90,7 @@ class VerticalCalendarView : FrameLayout {
         addView(content)
 
         calendarAdapter = VerticalCalendarViewAdapter(
-            calendarList, calendarDataList,
+            calendarList,
             monthTextSize, monthTextColor,
             dayTextSize, dayTextColor
         )
@@ -140,14 +138,9 @@ class VerticalCalendarView : FrameLayout {
                 }
             })
         }
-
-        if (reverse) {
-            setReverseCalendarList(startRange, endRange)
-        } else {
-            setCalendarList(startRange, endRange)
-        }
     }
 
+    /*
     /**
      * 리버스 달력 세팅
      */
@@ -178,12 +171,18 @@ class VerticalCalendarView : FrameLayout {
             calendarList.add(VerticalCalendarData("month", calendar))
 
             for (j in 0 until dayOfWeek) {
-                calendarList.add(VerticalCalendarData("empty", null))
+                calendarList.add(VerticalCalendarData("empty"))
             }
 
             monthPositionArray.add(dayOfWeek)
 
             for (j in 1..endDay) {
+                val progressPosition = if (i >= 0) {
+                    0
+                } else {
+                    i + endDay + j
+                }
+
                 calendarList.add(
                     VerticalCalendarData(
                         "day", GregorianCalendar(
@@ -193,7 +192,7 @@ class VerticalCalendarView : FrameLayout {
                             0,
                             0,
                             0
-                        )
+                        ), progressData = calendarDataList[progressPosition]
                     )
                 )
             }
@@ -213,19 +212,21 @@ class VerticalCalendarView : FrameLayout {
 
         calendarAdapter?.notifyDataSetChanged()
     }
+     */
 
     /**
      * 정상적인 달력 세팅
      */
     private fun setCalendarList(start: Int, end: Int) {
         calendarList.clear()
+        var progressIndex = 0
 
         val nowCalendar = GregorianCalendar()
 
         val monthPositionArray: ArrayList<Int> = arrayListOf()
         val monthArray: ArrayList<CalendarPositionData> = arrayListOf()
 
-        for (i in start downTo end) {
+        for (i in (start downTo end)) {
             val calendar = GregorianCalendar(
                 nowCalendar.get(Calendar.YEAR),
                 nowCalendar.get(Calendar.MONTH) + i,
@@ -238,7 +239,13 @@ class VerticalCalendarView : FrameLayout {
             val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
             val endDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-            calendarList.add(VerticalCalendarData("month", calendar, 0))
+            calendarList.add(
+                VerticalCalendarData(
+                    "month",
+                    calendar,
+                    0
+                )
+            )
 
             for (j in 0 until dayOfWeek) {
                 calendarList.add(VerticalCalendarData("empty", null))
@@ -256,10 +263,17 @@ class VerticalCalendarView : FrameLayout {
                             0,
                             0,
                             0
-                        )
+                        ), progressData = try {
+                            calendarDataList[progressIndex]
+                        } catch (e: Exception) {
+                            ProgressData()
+                        }
                     )
                 )
+
+                progressIndex++
             }
+
         }
 
         calendarList.forEachIndexed { index, verticalCalendarData ->
@@ -270,7 +284,9 @@ class VerticalCalendarView : FrameLayout {
 
         repeat(monthArray.size) {
             calendarList[monthArray[it].index] = VerticalCalendarData(
-                "month", monthArray[it].calendarData?.calendar, monthPositionArray[it]
+                "month",
+                monthArray[it].calendarData?.calendar,
+                monthPositionArray[it]
             )
         }
 
@@ -305,19 +321,6 @@ class VerticalCalendarView : FrameLayout {
     fun getNowDate(): String = dateFormatter.format(GregorianCalendar().timeInMillis)
 
     /**
-     * true = 스크롤 마지막으로
-     */
-    fun setEndScroll(end: Boolean = true) {
-        rl_calendar.visibility = View.INVISIBLE
-        if (end && reverse) {
-            //rl_calendar.scrollToPosition(calendarList.size - 20)
-            rl_calendar.smoothScrollToPosition(calendarList.size - 20).run {
-                visibility = View.VISIBLE
-            }
-        }
-    }
-
-    /**
      * 스크롤 값만큼 이동
      */
     fun setScroll(scrollY: Int) {
@@ -327,25 +330,18 @@ class VerticalCalendarView : FrameLayout {
     }
 
     /**
-     * 달력 시작 월~ 종료 월 변경
+     * 달력 시작 월 ~ 종료 월 변경
      */
-    fun setCalendarRange(
-        start: Int,
-        end: Int,
-        reverse: Boolean,
+    fun setCalendarProgress(
+        startRange: Int,
+        endRange: Int,
         progressData: ArrayList<ProgressData>
     ) {
-        startRange = start
-        endRange = end
+        this.startRange = startRange
+        this.endRange = endRange
 
         calendarDataList.addAll(progressData)
 
-        this.reverse = reverse
-
-        if (reverse) {
-            setReverseCalendarList(startRange, endRange)
-        } else {
-            setCalendarList(startRange, endRange)
-        }
+        setCalendarList(startRange, endRange)
     }
 }
