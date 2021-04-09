@@ -58,7 +58,7 @@ open class ActivityRingProgressBar : View {
     private var mAnimationDurationOuterView = 2000
     private var mMaxProgressOuterView = 100
     private var mProgressColorOuterView = Color.parseColor("#62B4FF")
-    private var mEmptyProgressColorOuterView = Color.parseColor("#EEEEEE")
+    private var mEmptyProgressColorOuterView = Color.parseColor("#242424")
     private var mPaintOuterView = Paint(Paint.ANTI_ALIAS_FLAG)
     private var mOuterColor = ArrayList<Int>()
 
@@ -72,7 +72,7 @@ open class ActivityRingProgressBar : View {
     private var mCenterProgress = 0
     private var mProgressColorCenterView = Color.parseColor("#c2ff07")
     private var mPaintCenterView = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var mEmptyProgressColorCenterView = Color.parseColor("#EEEEEE")
+    private var mEmptyProgressColorCenterView = Color.parseColor("#242424")
     private var mCenterColor = ArrayList<Int>()
 
 
@@ -86,7 +86,7 @@ open class ActivityRingProgressBar : View {
     private var mMaxProgressInnerView = 100
     private var mProgressColorInnerView = Color.parseColor("#F36262")
     private var mPaintInnerView = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var mEmptyProgressColorInnerView = Color.parseColor("#EEEEEE")
+    private var mEmptyProgressColorInnerView = Color.parseColor("#242424")
     private var mInnerColor = ArrayList<Int>()
 
     /**

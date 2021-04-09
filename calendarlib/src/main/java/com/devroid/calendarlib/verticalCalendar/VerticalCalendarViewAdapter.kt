@@ -1,7 +1,6 @@
 package com.devroid.calendarlib.verticalCalendar
 
 import android.graphics.Color
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View

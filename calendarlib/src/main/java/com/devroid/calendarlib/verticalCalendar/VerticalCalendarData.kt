@@ -15,8 +15,8 @@ data class ProgressData(
     var totalCalProgress: Int = 100,
     var currentGoalProgress: Int = 0,
     var totalGoalProgress: Int = 100,
-    var calColor: Int = Color.parseColor("#F36262"),
-    var goalColor: Int = Color.parseColor("#62B4FF")
+    var calColor: Int = Color.parseColor("#FFDC00"),
+    var goalColor: Int = Color.parseColor("#057CFD")
 )
 
 data class CalendarPositionData(

@@ -14,7 +14,7 @@ class VerticalActivity : AppCompatActivity() {
 
         calendarView.apply {
             val progress: ArrayList<ProgressData> = arrayListOf()
-            repeat(111) {
+            repeat(30) {
                 progress.add(
                     ProgressData(
                         currentCalProgress = 10,
