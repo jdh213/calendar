@@ -7,17 +7,21 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.devroid.calendarlib.R
-import kotlinx.android.synthetic.main.vertical_calendar_view.view.*
+import com.devroid.calendarlib.databinding.VerticalCalendarViewBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class VerticalCalendarView : FrameLayout {
+
+    private lateinit var binding: VerticalCalendarViewBinding
+
     private val layoutInflater =
         context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -38,6 +42,10 @@ class VerticalCalendarView : FrameLayout {
 
     private var dayTextSize = 12f
     private var dayTextColor = Color.BLACK
+
+    private var progressIndex = 0
+    private val monthPositionArray: ArrayList<Int> = arrayListOf()
+    private val monthArray: ArrayList<CalendarPositionData> = arrayListOf()
 
     constructor(context: Context) : super(context) {
         init()
@@ -86,8 +94,8 @@ class VerticalCalendarView : FrameLayout {
     }
 
     private fun init() {
-        val content = layoutInflater.inflate(R.layout.vertical_calendar_view, null, false)
-        addView(content)
+        binding = VerticalCalendarViewBinding.inflate(layoutInflater)
+        addView(binding.root)
 
         calendarAdapter = VerticalCalendarViewAdapter(
             calendarList,
@@ -97,7 +105,7 @@ class VerticalCalendarView : FrameLayout {
 
         //calendarAdapter?.setHasStableIds(true)
 
-        rl_calendar.apply {
+        binding.rlCalendar.apply {
             layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
             adapter = calendarAdapter
 
@@ -119,22 +127,27 @@ class VerticalCalendarView : FrameLayout {
                             //스크롤 처음
                             calendarList[first].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
+                                onScrollListener?.onScroll(date)
                             }
                         }
                         !(recyclerView.canScrollVertically(1)) -> {
                             //스크롤 마지막
                             calendarList[last].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
+                                onScrollListener?.onScroll(date)
                             }
+
+                            onScrollListener?.onScrollEnd()
                         }
                         else -> {
                             //중간지점
                             calendarList[center].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
+                                onScrollListener?.onScroll(date)
                             }
                         }
                     }
-                    onScrollListener?.onScroll(date)
+
                 }
             })
         }
@@ -218,13 +231,8 @@ class VerticalCalendarView : FrameLayout {
      * 정상적인 달력 세팅
      */
     private fun setCalendarList(start: Int, end: Int) {
-        calendarList.clear()
-        var progressIndex = 0
 
         val nowCalendar = GregorianCalendar()
-
-        val monthPositionArray: ArrayList<Int> = arrayListOf()
-        val monthArray: ArrayList<CalendarPositionData> = arrayListOf()
 
         for (i in (start downTo end)) {
             val calendar = GregorianCalendar(
@@ -273,7 +281,6 @@ class VerticalCalendarView : FrameLayout {
 
                 progressIndex++
             }
-
         }
 
         calendarList.forEachIndexed { index, verticalCalendarData ->
@@ -282,13 +289,16 @@ class VerticalCalendarView : FrameLayout {
             }
         }
 
-        repeat(monthArray.size) {
-            calendarList[monthArray[it].index] = VerticalCalendarData(
-                "month",
-                monthArray[it].calendarData?.calendar,
-                monthPositionArray[it]
-            )
-        }
+        Log.i("debugLog", "test monthPositionArray : $monthPositionArray")
+        Log.i("debugLog", "test monthArray : $monthArray")
+
+//        repeat(monthArray.size) {
+//            calendarList[monthArray[it].index] = VerticalCalendarData(
+//                "month",
+//                monthArray[it].calendarData?.calendar,
+//                monthPositionArray[it]
+//            )
+//        }
 
         calendarAdapter?.notifyDataSetChanged()
     }
@@ -316,6 +326,17 @@ class VerticalCalendarView : FrameLayout {
     }
 
     /**
+     * 스크롤 끝 리스너
+     */
+    fun onScrollEndListener(listener: () -> Unit) {
+        onScrollListener = object : OnScrollListener {
+            override fun onScrollEnd() {
+                listener()
+            }
+        }
+    }
+
+    /**
      * 현재 시각
      */
     fun getNowDate(): String = dateFormatter.format(GregorianCalendar().timeInMillis)
@@ -325,7 +346,7 @@ class VerticalCalendarView : FrameLayout {
      */
     fun setScroll(scrollY: Int) {
         Handler(Looper.getMainLooper()).postDelayed({
-            rl_calendar.scrollBy(0, scrollY)
+            binding.rlCalendar.scrollBy(0, scrollY)
         }, 100)
     }
 
@@ -343,5 +364,33 @@ class VerticalCalendarView : FrameLayout {
         calendarDataList.addAll(progressData)
 
         setCalendarList(startRange, endRange)
+    }
+
+
+    /**
+     * 정상적인 달력 세팅
+     */
+    fun getCalendarDayCount(start: Int, end: Int): Int {
+        var count = 0
+        val nowCalendar = GregorianCalendar()
+
+        for (i in (start downTo end)) {
+            val calendar = GregorianCalendar(
+                nowCalendar.get(Calendar.YEAR),
+                nowCalendar.get(Calendar.MONTH) + i,
+                1,
+                0,
+                0,
+                0
+            )
+
+            val endDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+            for (j in 1..endDay) {
+                count++
+            }
+        }
+
+        return count
     }
 }

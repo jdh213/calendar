@@ -37,7 +37,7 @@ open class ActivityRingProgressBar : View {
     /**
      * Common vars
      */
-    private var isAnimationOn = true
+    private var isAnimationOn = false
     private var mRoundedCorners = true
     private val mMaxSweepAngle = 360f
     private var mElevation = false

@@ -6,4 +6,5 @@ interface OnDayClickListener {
 
 interface OnScrollListener {
     fun onScroll(date: String) {}
+    fun onScrollEnd() {}
 }

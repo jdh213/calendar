@@ -3,13 +3,12 @@ package com.devroid.calendarlib.verticalCalendar
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.devroid.calendarlib.R
-import kotlinx.android.synthetic.main.vertical_day_view.view.*
-import kotlinx.android.synthetic.main.vertical_month_view.view.*
+import com.devroid.calendarlib.databinding.VerticalDayViewBinding
+import com.devroid.calendarlib.databinding.VerticalEmptyViewBinding
+import com.devroid.calendarlib.databinding.VerticalMonthViewBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,132 +50,152 @@ class VerticalCalendarViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             0 -> {
-                MonthHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.vertical_month_view, parent, false)
+                val binding = VerticalMonthViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
+                MonthHolder(binding)
             }
             1 -> {
-                EmptyHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.vertical_empty_view, parent, false)
+                val binding = VerticalEmptyViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
+                EmptyHolder(binding)
             }
             else -> {
-                DayHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.vertical_day_view, parent, false)
+                val binding = VerticalDayViewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
+                DayHolder(binding)
             }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.let { view ->
-            calendarList[position].apply {
-                when (type) {
-                    "month" -> {
-                        val params =
-                            view.layoutParams as StaggeredGridLayoutManager.LayoutParams
-                        params.isFullSpan = true
+        when (calendarList[position].type) {
+            "month" -> {
+                (holder as MonthHolder).bind(calendarList[position])
+            }
+            "empty" -> {
+                (holder as EmptyHolder).bind()
+            }
+            else -> {
+                (holder as DayHolder).bind(
+                    calendarList[position].calendar,
+                    calendarList[position].progressData
+                )
+            }
+        }
+    }
 
-                        setMonth(calendarList[position], view)
-                    }
-                    "empty" -> {
+    private fun setMonth(data: VerticalCalendarData, binding: VerticalMonthViewBinding) {
+        with(binding) {
+            monthTextClear(binding)
+            val date = dateFormatter.format(data.calendar?.timeInMillis)
+            when (data.monthPosition) {
+                0 -> {
+                    monthText1.text = date
+                    monthText1.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText1.setTextColor(monthColor)
+                }
 
-                    }
-                    else -> {
-                        calendar?.let { calendar ->
-                            view.dayText.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
-                            view.dayText.setTextSize(TypedValue.COMPLEX_UNIT_PX, daySize)
-                            view.dayText.setTextColor(dayColor)
+                1 -> {
+                    monthText2.text = date
+                    monthText2.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText2.setTextColor(monthColor)
+                }
 
-                            view.dayGraph.apply {
-                                setOuterProgressColor(arrayListOf(progressData.calColor))
-                                setCenterProgressColor(arrayListOf(progressData.goalColor))
+                2 -> {
+                    monthText3.text = date
+                    monthText3.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText3.setTextColor(monthColor)
+                }
 
-                                setMaxProgressOuterView(progressData.totalCalProgress)
-                                setOuterProgress(progressData.currentCalProgress)
+                3 -> {
+                    monthText4.text = date
+                    monthText4.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText4.setTextColor(monthColor)
+                }
 
-                                setMaxProgressCenterView(progressData.totalGoalProgress)
-                                setCenterProgress(progressData.currentGoalProgress)
-                            }
+                4 -> {
+                    monthText5.text = date
+                    monthText5.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText5.setTextColor(monthColor)
+                }
 
-                            view.setOnClickListener {
-                                onClickListener?.onClick(
-                                    calendar.get(Calendar.DAY_OF_MONTH),
-                                    calendar.get(Calendar.MONTH),
-                                    calendar.get(Calendar.YEAR)
-                                )
-                            }
-                        }
-                    }
+                5 -> {
+                    monthText6.text = date
+                    monthText6.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText6.setTextColor(monthColor)
+                }
+
+                6 -> {
+                    monthText7.text = date
+                    monthText7.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
+                    monthText7.setTextColor(monthColor)
                 }
             }
         }
     }
 
-    private fun setMonth(data: VerticalCalendarData, view: View) {
-        monthTextClear(view)
-        val date = dateFormatter.format(data.calendar?.timeInMillis)
-        when (data.monthPosition) {
-            0 -> {
-                view.monthText1.text = date
-                view.monthText1.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText1.setTextColor(monthColor)
-            }
+    private fun monthTextClear(binding: VerticalMonthViewBinding) {
+        binding.monthText1.text = ""
+        binding.monthText2.text = ""
+        binding.monthText3.text = ""
+        binding.monthText4.text = ""
+        binding.monthText5.text = ""
+        binding.monthText6.text = ""
+        binding.monthText7.text = ""
+    }
 
-            1 -> {
-                view.monthText2.text = date
-                view.monthText2.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText2.setTextColor(monthColor)
-            }
+    inner class MonthHolder(private val binding: VerticalMonthViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(verticalCalendarData: VerticalCalendarData) = with(binding) {
+            val params =
+                binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams
+            params.isFullSpan = true
 
-            2 -> {
-                view.monthText3.text = date
-                view.monthText3.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText3.setTextColor(monthColor)
-            }
-
-            3 -> {
-                view.monthText4.text = date
-                view.monthText4.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText4.setTextColor(monthColor)
-            }
-
-            4 -> {
-                view.monthText5.text = date
-                view.monthText5.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText5.setTextColor(monthColor)
-            }
-
-            5 -> {
-                view.monthText6.text = date
-                view.monthText6.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText6.setTextColor(monthColor)
-            }
-
-            6 -> {
-                view.monthText7.text = date
-                view.monthText7.setTextSize(TypedValue.COMPLEX_UNIT_PX, monthSize)
-                view.monthText7.setTextColor(monthColor)
-            }
+            setMonth(verticalCalendarData, binding)
         }
     }
 
-    private fun monthTextClear(view: View) {
-        view.monthText1.text = ""
-        view.monthText2.text = ""
-        view.monthText3.text = ""
-        view.monthText4.text = ""
-        view.monthText5.text = ""
-        view.monthText6.text = ""
-        view.monthText7.text = ""
+    inner class EmptyHolder(private val binding: VerticalEmptyViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind() = with(binding) {
+        }
     }
 
-    inner class MonthHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class DayHolder(private val binding: VerticalDayViewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(calendar: GregorianCalendar?, progressData: ProgressData) = with(binding) {
 
-    inner class EmptyHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+            dayText.text = calendar?.get(Calendar.DAY_OF_MONTH).toString()
+            dayText.setTextSize(TypedValue.COMPLEX_UNIT_PX, daySize)
+            dayText.setTextColor(dayColor)
 
-    inner class DayHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+            dayGraph.apply {
+                setOuterProgressColor(arrayListOf(progressData.calColor))
+                setCenterProgressColor(arrayListOf(progressData.goalColor))
+
+                setMaxProgressOuterView(progressData.totalCalProgress)
+                setOuterProgress(progressData.currentCalProgress)
+
+                setMaxProgressCenterView(progressData.totalGoalProgress)
+                setCenterProgress(progressData.currentGoalProgress)
+            }
+
+            root.setOnClickListener {
+                onClickListener?.onClick(
+                    calendar?.get(Calendar.DAY_OF_MONTH) ?: 0,
+                    calendar?.get(Calendar.MONTH) ?: 0,
+                    calendar?.get(Calendar.YEAR) ?: 0
+                )
+            }
+        }
+    }
 }
