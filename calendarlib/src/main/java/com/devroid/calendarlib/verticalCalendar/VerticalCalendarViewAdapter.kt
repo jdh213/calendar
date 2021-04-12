@@ -167,6 +167,7 @@ class VerticalCalendarViewAdapter(
     inner class EmptyHolder(private val binding: VerticalEmptyViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind() = with(binding) {
+
         }
     }
 
