@@ -318,7 +318,9 @@ class VerticalCalendarView : FrameLayout {
             )
         }
 
-        calendarAdapter?.notifyDataSetChanged()
+        binding.rlCalendar.post {
+            calendarAdapter?.notifyDataSetChanged()
+        }
     }
 
     /**

@@ -27,7 +27,7 @@ class VerticalActivity : AppCompatActivity() {
                     ProgressData(
                         currentCalProgress = 10,
                         totalCalProgress = 100,
-                        currentGoalProgress = 10,
+                        currentGoalProgress = 20,
                         totalGoalProgress = 100
                     )
                 )
@@ -44,23 +44,25 @@ class VerticalActivity : AppCompatActivity() {
             }
 
             onScrollEndListener {
-                start -= 3
-                end -= 3
+                if (end > -12) {
+                    start -= 3
+                    end -= 3
 
-                val nextCount = getCalendarDayCount(start, end)
+                    val nextCount = getCalendarDayCount(start, end)
 
-                repeat(nextCount) {
-                    progress.add(
-                        ProgressData(
-                            currentCalProgress = 10,
-                            totalCalProgress = 100,
-                            currentGoalProgress = 10,
-                            totalGoalProgress = 100
+                    repeat(nextCount) {
+                        progress.add(
+                            ProgressData(
+                                currentCalProgress = 10,
+                                totalCalProgress = 100,
+                                currentGoalProgress = 10,
+                                totalGoalProgress = 100
+                            )
                         )
-                    )
-                }
+                    }
 
-                setCalendarProgress(start, end, progress)
+                    setCalendarProgress(start, end, progress)
+                }
             }
         }
     }

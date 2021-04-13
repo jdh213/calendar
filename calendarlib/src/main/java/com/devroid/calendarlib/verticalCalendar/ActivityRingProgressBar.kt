@@ -419,7 +419,11 @@ open class ActivityRingProgressBar : View {
      * @return Sweep Angle for Outer ProgressView
      * */
     private fun calcSweepAngleFromOuterProgress(progress: Int): Float {
-        return (mMaxSweepAngle / mMaxProgressOuterView * progress)
+        return if (progress == 0) {
+            return 0f
+        } else {
+            (mMaxSweepAngle / mMaxProgressOuterView * progress)
+        }
     }
 
     /**
@@ -427,7 +431,13 @@ open class ActivityRingProgressBar : View {
      * */
     private fun calcSweepAngleFromInnerProgress(progress: Int): Float {
         return when {
-            !(hasOneProgressView && hasTwoProgressView) -> (mMaxSweepAngle / mMaxProgressInnerView * progress)
+            !(hasOneProgressView && hasTwoProgressView) -> {
+                if (progress == 0) {
+                    0f
+                } else {
+                    (mMaxSweepAngle / mMaxProgressInnerView * progress)
+                }
+            }
             else -> 0F
         }
     }
@@ -437,7 +447,13 @@ open class ActivityRingProgressBar : View {
      * */
     private fun calcSweepAngleFromCenterProgress(progress: Int): Float {
         return when {
-            !(hasOneProgressView && !hasTwoProgressView) -> (mMaxSweepAngle / mMaxProgressCenterView * progress)
+            !(hasOneProgressView && !hasTwoProgressView) -> {
+                if (progress == 0) {
+                    0f
+                } else {
+                    (mMaxSweepAngle / mMaxProgressCenterView * progress)
+                }
+            }
             else -> 0F
         }
     }
@@ -628,8 +644,7 @@ open class ActivityRingProgressBar : View {
     fun setOuterProgress(progress: Int) {
         //if (progress != 0) mOuterProgress = progress
         mOuterProgress = progress
-        mSweepAngleOuterView = progress
-        /*
+
         val animator =
             ValueAnimator.ofFloat(
                 mSweepAngleOuterView.toFloat(),
@@ -644,8 +659,6 @@ open class ActivityRingProgressBar : View {
             invalidate()
         }
         animator.start()
-         */
-
     }
 
     /**
@@ -741,8 +754,7 @@ open class ActivityRingProgressBar : View {
         if (!(hasOneProgressView && hasTwoProgressView)) {
             //if (progress != 0) mInnerProgress = progress
             mInnerProgress = progress
-            mSweepAngleInnerView = progress
-            /*
+
             val animator =
                 ValueAnimator.ofFloat(
                     mSweepAngleInnerView.toFloat(),
@@ -758,8 +770,6 @@ open class ActivityRingProgressBar : View {
 
             }
             animator.start()
-
-             */
         }
     }
 
@@ -780,8 +790,7 @@ open class ActivityRingProgressBar : View {
         if (!(hasOneProgressView && !hasTwoProgressView)) {
             //if (progress != 0) mCenterProgress = progress
             mCenterProgress = progress
-            mSweepAngleCenterView = progress
-            /*
+
             val animator =
                 ValueAnimator.ofFloat(
                     mSweepAngleCenterView.toFloat(),
@@ -795,9 +804,8 @@ open class ActivityRingProgressBar : View {
                 mSweepAngleCenterView = (value.toInt())
                 invalidate()
             }
-            animator.start()
 
-             */
+            animator.start()
         }
     }
 
