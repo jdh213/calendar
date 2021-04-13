@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.devroid.calendarlib.R
 import com.devroid.calendarlib.databinding.VerticalCalendarViewBinding
 import java.text.SimpleDateFormat
@@ -31,6 +30,7 @@ class VerticalCalendarView : FrameLayout {
     private var calendarAdapter: VerticalCalendarViewAdapter? = null
 
     private var onScrollListener: OnScrollListener? = null
+    private var onScrollEndListener: OnScrollEndListener? = null
 
     private var dateFormatter = SimpleDateFormat("yyyy. MM", Locale.KOREAN)
 
@@ -105,20 +105,42 @@ class VerticalCalendarView : FrameLayout {
 
         //calendarAdapter?.setHasStableIds(true)
 
+        val manager = GridLayoutManager(context, 7, GridLayoutManager.VERTICAL, false)
         binding.rlCalendar.apply {
-            layoutManager = StaggeredGridLayoutManager(7, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = manager
             adapter = calendarAdapter
 
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
 
+                    //private val MONTH_TYPE = 0
+                    //private val EMPTY_TYPE = 1
+                    //private val DAY_TYPE = 2
+
+                    return when (calendarAdapter?.getItemViewType(position)) {
+                        0 -> {
+                            7
+                        }
+                        1 -> {
+                            1
+                        }
+                        else -> {
+                            1
+                        }
+                    }
+                }
+            }
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
                     var date = ""
-                    val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
+                    val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                    layoutManager.findFirstVisibleItemPosition()
 
-                    val first = layoutManager.findFirstVisibleItemPositions(IntArray(7))[0]
-                    val last = layoutManager.findLastVisibleItemPositions(IntArray(7))[0]
+                    val first = layoutManager.findFirstVisibleItemPosition()
+                    val last = layoutManager.findLastVisibleItemPosition()
 
                     val center = (first + last) / 2
 
@@ -127,27 +149,25 @@ class VerticalCalendarView : FrameLayout {
                             //스크롤 처음
                             calendarList[first].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
-                                onScrollListener?.onScroll(date)
                             }
                         }
                         !(recyclerView.canScrollVertically(1)) -> {
                             //스크롤 마지막
                             calendarList[last].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
-                                onScrollListener?.onScroll(date)
                             }
 
-                            onScrollListener?.onScrollEnd()
+                            onScrollEndListener?.onScrollEnd()
                         }
                         else -> {
                             //중간지점
                             calendarList[center].calendar?.let {
                                 date = dateFormatter.format(it.timeInMillis)
-                                onScrollListener?.onScroll(date)
                             }
                         }
                     }
 
+                    onScrollListener?.onScroll(date)
                 }
             })
         }
@@ -231,6 +251,7 @@ class VerticalCalendarView : FrameLayout {
      * 정상적인 달력 세팅
      */
     private fun setCalendarList(start: Int, end: Int) {
+        monthArray.clear()
 
         val nowCalendar = GregorianCalendar()
 
@@ -289,16 +310,13 @@ class VerticalCalendarView : FrameLayout {
             }
         }
 
-        Log.i("debugLog", "test monthPositionArray : $monthPositionArray")
-        Log.i("debugLog", "test monthArray : $monthArray")
-
-//        repeat(monthArray.size) {
-//            calendarList[monthArray[it].index] = VerticalCalendarData(
-//                "month",
-//                monthArray[it].calendarData?.calendar,
-//                monthPositionArray[it]
-//            )
-//        }
+        repeat(monthArray.size) {
+            calendarList[monthArray[it].index] = VerticalCalendarData(
+                "month",
+                monthArray[it].calendarData?.calendar,
+                monthPositionArray[it]
+            )
+        }
 
         calendarAdapter?.notifyDataSetChanged()
     }
@@ -329,7 +347,7 @@ class VerticalCalendarView : FrameLayout {
      * 스크롤 끝 리스너
      */
     fun onScrollEndListener(listener: () -> Unit) {
-        onScrollListener = object : OnScrollListener {
+        onScrollEndListener = object : OnScrollEndListener {
             override fun onScrollEnd() {
                 listener()
             }

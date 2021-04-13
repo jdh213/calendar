@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.devroid.calendarlib.R
+import kotlin.math.min
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 open class ActivityRingProgressBar : View {
@@ -37,7 +38,7 @@ open class ActivityRingProgressBar : View {
     /**
      * Common vars
      */
-    private var isAnimationOn = false
+    private var isAnimationOn = true
     private var mRoundedCorners = true
     private val mMaxSweepAngle = 360f
     private var mElevation = false
@@ -224,7 +225,7 @@ open class ActivityRingProgressBar : View {
      * Draws the Inner Progress View
      */
     private fun drawInnerProgressView(canvas: Canvas?) {
-        val diameter = Math.min(mViewWidth, mViewHeight)
+        val diameter = min(mViewWidth, mViewHeight)
         val paddingView = (diameter / 16.0).toFloat()
         val stroke = (diameter / 8).toFloat() * mCircleThickness
         val addVal = (stroke * 2) + 2 * mCirclePadding
@@ -236,7 +237,7 @@ open class ActivityRingProgressBar : View {
         mPaintInnerView.strokeCap = if (mRoundedCorners) Paint.Cap.ROUND else Paint.Cap.ROUND
         mPaintInnerView.style = Paint.Style.STROKE
         if (mElevation) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaintInnerView)
+            setLayerType(LAYER_TYPE_SOFTWARE, mPaintInnerView)
             mPaintInnerView.setShadowLayer(
                 1f, 1f, 0f, Color.argb(128, 0, 0, 0)
             )
@@ -281,7 +282,7 @@ open class ActivityRingProgressBar : View {
      * Draws the Center ProgressView
      */
     private fun drawCenterProgressView(canvas: Canvas?) {
-        val diameter = Math.min(mViewWidth, mViewHeight)
+        val diameter = min(mViewWidth, mViewHeight)
         val paddingView = (diameter / 16.0).toFloat()
         val stroke = (diameter / 8).toFloat() * mCircleThickness
         val addVal = stroke + mCirclePadding
@@ -293,7 +294,7 @@ open class ActivityRingProgressBar : View {
         mPaintCenterView.strokeCap = if (mRoundedCorners) Paint.Cap.ROUND else Paint.Cap.BUTT
         mPaintCenterView.style = Paint.Style.STROKE
         if (mElevation) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaintCenterView)
+            setLayerType(LAYER_TYPE_SOFTWARE, mPaintCenterView)
             mPaintCenterView.setShadowLayer(
                 1f, 1f, 0f, Color.argb(128, 0, 0, 0)
             )
@@ -338,7 +339,7 @@ open class ActivityRingProgressBar : View {
      * Draws the Outer ProgressView
      */
     private fun drawOuterProgressView(canvas: Canvas?) {
-        val diameter = Math.min(mViewWidth, mViewHeight)
+        val diameter = min(mViewWidth, mViewHeight)
         val paddingView = (diameter / 16.0).toFloat()
         val stroke = (diameter / 8).toFloat() * mCircleThickness
         val oval = RectF(paddingView, paddingView, diameter - paddingView, diameter - paddingView)
@@ -348,7 +349,7 @@ open class ActivityRingProgressBar : View {
         mPaintOuterView.strokeCap = if (mRoundedCorners) Paint.Cap.ROUND else Paint.Cap.ROUND
         mPaintOuterView.style = Paint.Style.STROKE
         if (mElevation) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, mPaintOuterView)
+            setLayerType(LAYER_TYPE_SOFTWARE, mPaintOuterView)
             mPaintOuterView.setShadowLayer(
                 1f, 1f, 0f, Color.argb(128, 0, 0, 0)
             )
@@ -627,7 +628,7 @@ open class ActivityRingProgressBar : View {
     fun setOuterProgress(progress: Int) {
         //if (progress != 0) mOuterProgress = progress
         mOuterProgress = progress
-
+        mSweepAngleOuterView = progress
         /*
         val animator =
             ValueAnimator.ofFloat(
@@ -643,8 +644,8 @@ open class ActivityRingProgressBar : View {
             invalidate()
         }
         animator.start()
-
          */
+
     }
 
     /**
@@ -738,7 +739,10 @@ open class ActivityRingProgressBar : View {
      */
     fun setInnerProgress(progress: Int) {
         if (!(hasOneProgressView && hasTwoProgressView)) {
-            if (progress != 0) mInnerProgress = progress
+            //if (progress != 0) mInnerProgress = progress
+            mInnerProgress = progress
+            mSweepAngleInnerView = progress
+            /*
             val animator =
                 ValueAnimator.ofFloat(
                     mSweepAngleInnerView.toFloat(),
@@ -754,6 +758,8 @@ open class ActivityRingProgressBar : View {
 
             }
             animator.start()
+
+             */
         }
     }
 
@@ -774,20 +780,24 @@ open class ActivityRingProgressBar : View {
         if (!(hasOneProgressView && !hasTwoProgressView)) {
             //if (progress != 0) mCenterProgress = progress
             mCenterProgress = progress
-//            val animator =
-//                ValueAnimator.ofFloat(
-//                    mSweepAngleCenterView.toFloat(),
-//                    calcSweepAngleFromCenterProgress(mCenterProgress)
-//                )
-//            animator.removeAllUpdateListeners()
-//            animator.interpolator = DecelerateInterpolator()
-//            animator.duration = mAnimationDurationCenterView.toLong()
-//            animator.addUpdateListener { valueAnimator ->
-//                val value: Float = valueAnimator.animatedValue as Float
-//                mSweepAngleCenterView = (value.toInt())
-//                invalidate()
-//            }
-//            animator.start()
+            mSweepAngleCenterView = progress
+            /*
+            val animator =
+                ValueAnimator.ofFloat(
+                    mSweepAngleCenterView.toFloat(),
+                    calcSweepAngleFromCenterProgress(mCenterProgress)
+                )
+            animator.removeAllUpdateListeners()
+            animator.interpolator = DecelerateInterpolator()
+            animator.duration = mAnimationDurationCenterView.toLong()
+            animator.addUpdateListener { valueAnimator ->
+                val value: Float = valueAnimator.animatedValue as Float
+                mSweepAngleCenterView = (value.toInt())
+                invalidate()
+            }
+            animator.start()
+
+             */
         }
     }
 

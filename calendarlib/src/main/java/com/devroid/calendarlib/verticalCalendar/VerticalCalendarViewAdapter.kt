@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.devroid.calendarlib.databinding.VerticalDayViewBinding
 import com.devroid.calendarlib.databinding.VerticalEmptyViewBinding
 import com.devroid.calendarlib.databinding.VerticalMonthViewBinding
@@ -156,10 +155,6 @@ class VerticalCalendarViewAdapter(
     inner class MonthHolder(private val binding: VerticalMonthViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(verticalCalendarData: VerticalCalendarData) = with(binding) {
-            val params =
-                binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams
-            params.isFullSpan = true
-
             setMonth(verticalCalendarData, binding)
         }
     }

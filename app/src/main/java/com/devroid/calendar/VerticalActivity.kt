@@ -34,7 +34,7 @@ class VerticalActivity : AppCompatActivity() {
             }
             //이번달부터 end달까지
             setCalendarProgress(start, end, progress)
-            setScroll(100)
+            setScroll(600)
 
             onScrollListener { date ->
                 date?.let {
@@ -44,8 +44,8 @@ class VerticalActivity : AppCompatActivity() {
             }
 
             onScrollEndListener {
-                start -= 1
-                end -= 1
+                start -= 3
+                end -= 3
 
                 val nextCount = getCalendarDayCount(start, end)
 
