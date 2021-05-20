@@ -22,7 +22,7 @@ class VerticalCalendarViewAdapter(
 
     var onClickListener: OnDayClickListener? = null
 
-    private var dateFormatter = SimpleDateFormat("MM", Locale.KOREAN)
+    private var dateFormatter = SimpleDateFormat("M월", Locale.KOREAN)
 
     private val MONTH_TYPE = 0
     private val EMPTY_TYPE = 1

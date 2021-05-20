@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_vertical.*
 class VerticalActivity : AppCompatActivity() {
     private var start = 1
     private var end = -1
+    private var loadingFlag = true
     private val progress: ArrayList<ProgressData> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
