@@ -91,6 +91,13 @@ open class ActivityRingProgressBar : View {
     private var mInnerColor = ArrayList<Int>()
 
     /**
+     * animation
+     */
+    private var outerAnimator: ValueAnimator? = null
+    private var centerAnimator: ValueAnimator? = null
+    private var innerAnimator: ValueAnimator? = null
+
+    /**
      * @onDraw draws all the Layout on Screen
      */
     override fun onDraw(canvas: Canvas?) {
@@ -645,25 +652,28 @@ open class ActivityRingProgressBar : View {
         //if (progress != 0) mOuterProgress = progress
         mOuterProgress = progress
 
-        val animator =
+        outerAnimator?.cancel()
+        outerAnimator?.removeAllUpdateListeners()
+
+        outerAnimator =
             ValueAnimator.ofFloat(
                 mSweepAngleOuterView.toFloat(),
                 calcSweepAngleFromOuterProgress(mOuterProgress)
             )
-        animator.removeAllUpdateListeners()
-        animator.interpolator = DecelerateInterpolator()
-        animator.duration =
+        outerAnimator?.interpolator = DecelerateInterpolator()
+        outerAnimator?.duration =
             if (progress <= 50) {
                 mAnimationDurationOuterView.toLong()
             } else {
                 mAnimationDurationOuterView.toLong() * 2
             }
-        animator.addUpdateListener { valueAnimator ->
+        outerAnimator?.addUpdateListener { valueAnimator ->
             val value: Float = valueAnimator.animatedValue as Float
             mSweepAngleOuterView = (value.toInt())
             invalidate()
         }
-        animator.start()
+
+        outerAnimator?.start()
     }
 
     /**
@@ -760,25 +770,27 @@ open class ActivityRingProgressBar : View {
             //if (progress != 0) mInnerProgress = progress
             mInnerProgress = progress
 
-            val animator =
+            innerAnimator?.cancel()
+            innerAnimator?.removeAllUpdateListeners()
+            innerAnimator =
                 ValueAnimator.ofFloat(
                     mSweepAngleInnerView.toFloat(),
                     calcSweepAngleFromInnerProgress(mInnerProgress)
                 )
-            animator.removeAllUpdateListeners()
-            animator.interpolator = DecelerateInterpolator()
-            animator.duration = if (progress <= 50) {
+
+            innerAnimator?.interpolator = DecelerateInterpolator()
+            innerAnimator?.duration = if (progress <= 50) {
                 mAnimationDurationInnerView.toLong()
             } else {
                 mAnimationDurationInnerView.toLong() * 2
             }
-            animator.addUpdateListener { valueAnimator ->
+            innerAnimator?.addUpdateListener { valueAnimator ->
                 val value: Float = valueAnimator.animatedValue as Float
                 mSweepAngleInnerView = (value.toInt())
                 invalidate()
 
             }
-            animator.start()
+            innerAnimator?.start()
         }
     }
 
@@ -800,25 +812,28 @@ open class ActivityRingProgressBar : View {
             //if (progress != 0) mCenterProgress = progress
             mCenterProgress = progress
 
-            val animator =
+            centerAnimator?.cancel()
+            centerAnimator?.removeAllUpdateListeners()
+
+            centerAnimator =
                 ValueAnimator.ofFloat(
                     mSweepAngleCenterView.toFloat(),
                     calcSweepAngleFromCenterProgress(mCenterProgress)
                 )
-            animator.removeAllUpdateListeners()
-            animator.interpolator = DecelerateInterpolator()
-            animator.duration = if (progress <= 50) {
+
+            centerAnimator?.interpolator = DecelerateInterpolator()
+            centerAnimator?.duration = if (progress <= 50) {
                 mAnimationDurationCenterView.toLong()
             } else {
                 mAnimationDurationCenterView.toLong() * 2
             }
-            animator.addUpdateListener { valueAnimator ->
+            centerAnimator?.addUpdateListener { valueAnimator ->
                 val value: Float = valueAnimator.animatedValue as Float
                 mSweepAngleCenterView = (value.toInt())
                 invalidate()
             }
 
-            animator.start()
+            centerAnimator?.start()
         }
     }
 
@@ -867,6 +882,12 @@ open class ActivityRingProgressBar : View {
     fun setCirclePadding(value: Float) {
         mCirclePadding = value
         invalidate()
+    }
+
+    fun animationAllCancel() {
+        outerAnimator?.cancel()
+        innerAnimator?.cancel()
+        centerAnimator?.cancel()
     }
 
 }
