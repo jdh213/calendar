@@ -1,6 +1,7 @@
 package com.devroid.calendarlib.verticalCalendar
 
 import android.graphics.Color
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,12 +18,14 @@ class VerticalCalendarViewAdapter(
     private val monthSize: Float,
     private val monthColor: Int = Color.BLACK,
     private val daySize: Float,
-    private val dayColor: Int = Color.BLACK
+    private val dayColor: Int = Color.BLACK,
+    private val todayColor: Int = Color.RED,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickListener: OnDayClickListener? = null
 
     private var dateFormatter = SimpleDateFormat("M월", Locale.KOREAN)
+    private var defaultFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
 
     private val MONTH_TYPE = 0
     private val EMPTY_TYPE = 1
@@ -168,11 +171,24 @@ class VerticalCalendarViewAdapter(
 
     inner class DayHolder(private val binding: VerticalDayViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private val today = defaultFormatter.format(GregorianCalendar().time.time)
         fun bind(calendar: GregorianCalendar?, progressData: ProgressData) = with(binding) {
+
+            val day = defaultFormatter.format(calendar?.time?.time)
+
+            Log.i("debugLog", "test today: $today")
+            Log.i("debugLog", "test day: $day")
 
             dayText.text = calendar?.get(Calendar.DAY_OF_MONTH).toString()
             dayText.setTextSize(TypedValue.COMPLEX_UNIT_PX, daySize)
-            dayText.setTextColor(dayColor)
+            dayText.setTextColor(
+                if (today == day) {
+                    todayColor
+                } else {
+                    dayColor
+                }
+            )
 
             dayGraph.apply {
                 setOuterProgressColor(arrayListOf(progressData.calColor))

@@ -35,5 +35,7 @@
 
         <attr name="monthTextColor" format="color" />
         <attr name="monthTextSize" format="dimension" />
+
+        <attr name="todayTextColor" format="color" />
     </declare-styleable>
 </resources>

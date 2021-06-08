@@ -13,7 +13,8 @@
         app:dayTextColor="@color/black"
         app:dayTextSize="12dp"
         app:monthTextColor="@color/black"
-        app:monthTextSize="16dp" />
+        app:monthTextSize="16dp"
+        app:todayTextColor="@color/pink"/>
 
     <TextView
         android:id="@+id/topText"
