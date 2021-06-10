@@ -45,6 +45,8 @@ class VerticalCalendarView : FrameLayout {
 
     private var todayTextColor = Color.RED
 
+    private var todayTextStyle = 0
+
     private var progressIndex = 0
     private val monthPositionArray: ArrayList<Int> = arrayListOf()
     private val monthArray: ArrayList<CalendarPositionData> = arrayListOf()
@@ -96,6 +98,9 @@ class VerticalCalendarView : FrameLayout {
 
         todayTextColor =
             typedArray.getColor(R.styleable.VerticalCalendarView_todayTextColor, todayTextColor)
+
+        todayTextStyle =
+            typedArray.getInt(R.styleable.VerticalCalendarView_todayTextStyle, todayTextStyle)
     }
 
     private fun init() {
@@ -105,7 +110,7 @@ class VerticalCalendarView : FrameLayout {
         calendarAdapter = VerticalCalendarViewAdapter(
             calendarList,
             monthTextSize, monthTextColor,
-            dayTextSize, dayTextColor, todayTextColor
+            dayTextSize, dayTextColor, todayTextColor, todayTextStyle
         )
 
         //calendarAdapter?.setHasStableIds(true)

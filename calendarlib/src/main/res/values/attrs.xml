@@ -37,5 +37,10 @@
         <attr name="monthTextSize" format="dimension" />
 
         <attr name="todayTextColor" format="color" />
+
+        <attr name="todayTextStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+        </attr>
     </declare-styleable>
 </resources>

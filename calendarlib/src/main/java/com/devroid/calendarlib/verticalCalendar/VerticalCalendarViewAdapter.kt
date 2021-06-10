@@ -1,6 +1,7 @@
 package com.devroid.calendarlib.verticalCalendar
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ class VerticalCalendarViewAdapter(
     private val daySize: Float,
     private val dayColor: Int = Color.BLACK,
     private val todayColor: Int = Color.RED,
+    private val todayStyle: Int = 0,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickListener: OnDayClickListener? = null
@@ -189,6 +191,15 @@ class VerticalCalendarViewAdapter(
                     dayColor
                 }
             )
+            dayText.typeface = if (today == day) {
+                if (todayStyle == 0) {
+                    Typeface.DEFAULT
+                } else {
+                    Typeface.DEFAULT_BOLD
+                }
+            } else {
+                Typeface.DEFAULT
+            }
 
             dayGraph.apply {
                 setOuterProgressColor(arrayListOf(progressData.calColor))
