@@ -22,6 +22,7 @@ class VerticalCalendarViewAdapter(
     private val dayColor: Int = Color.BLACK,
     private val todayColor: Int = Color.RED,
     private val todayStyle: Int = 0,
+    private val todayBackgroundColor: Int = Color.TRANSPARENT
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickListener: OnDayClickListener? = null
@@ -199,6 +200,12 @@ class VerticalCalendarViewAdapter(
                 }
             } else {
                 Typeface.DEFAULT
+            }
+
+            if (today == day) {
+                dayGraph.setCenterBackgroundColor(todayBackgroundColor)
+            } else {
+                dayGraph.setCenterBackgroundColor(Color.TRANSPARENT)
             }
 
             dayGraph.apply {

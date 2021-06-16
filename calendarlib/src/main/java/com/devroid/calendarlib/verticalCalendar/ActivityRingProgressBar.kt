@@ -75,7 +75,7 @@ open class ActivityRingProgressBar : View {
     private var mPaintCenterView = Paint(Paint.ANTI_ALIAS_FLAG)
     private var mEmptyProgressColorCenterView = Color.parseColor("#242424")
     private var mCenterColor = ArrayList<Int>()
-
+    private var mCenterBackgroundColor = Color.TRANSPARENT
 
     /**
      * Data of the Inner View
@@ -143,6 +143,11 @@ open class ActivityRingProgressBar : View {
                 R.styleable.ActivityRingProgressBar_centerProgressColor,
                 mProgressColorCenterView
             )
+        mCenterBackgroundColor = a.getColor(
+            R.styleable.ActivityRingProgressBar_centerBackgroundColor,
+            mCenterBackgroundColor
+        )
+
         hasOneProgressView =
             a.getBoolean(R.styleable.ActivityRingProgressBar_hasOneProgressView, hasOneProgressView)
         hasTwoProgressView =
@@ -239,6 +244,7 @@ open class ActivityRingProgressBar : View {
         val subVal = ((stroke * 2) + paddingView + 2 * mCirclePadding)
         val oval =
             RectF(paddingView + addVal, paddingView + addVal, diameter - subVal, diameter - subVal)
+
         mPaintInnerView.strokeWidth = stroke
         mPaintInnerView.isAntiAlias = true
         mPaintInnerView.strokeCap = if (mRoundedCorners) Paint.Cap.ROUND else Paint.Cap.ROUND
@@ -282,7 +288,6 @@ open class ActivityRingProgressBar : View {
             false,
             mPaintInnerView
         )
-
     }
 
     /**
@@ -296,6 +301,15 @@ open class ActivityRingProgressBar : View {
         val subVal = (stroke + paddingView + mCirclePadding)
         val oval =
             RectF(paddingView + addVal, paddingView + addVal, diameter - subVal, diameter - subVal)
+
+        canvas?.drawArc(
+            oval,
+            0f,
+            360f,
+            false,
+            Paint(Paint.ANTI_ALIAS_FLAG).apply { color = mCenterBackgroundColor }
+        )
+
         mPaintCenterView.strokeWidth = stroke
         mPaintCenterView.isAntiAlias = true
         mPaintCenterView.strokeCap = if (mRoundedCorners) Paint.Cap.ROUND else Paint.Cap.BUTT
@@ -845,6 +859,11 @@ open class ActivityRingProgressBar : View {
             mCenterColor = color
             invalidate()
         }
+    }
+
+    fun setCenterBackgroundColor(color: Int) {
+        mCenterBackgroundColor = color
+        invalidate()
     }
 
     /**

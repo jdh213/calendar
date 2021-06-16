@@ -12,6 +12,8 @@
         <attr name="centerProgressStartAngle" format="integer" />
         <attr name="centerMaxProgress" format="integer" />
         <attr name="centerEmptyProgressColor" format="color" />
+
+        <attr name="centerBackgroundColor" format="color" />
         <!--inner view-->
         <attr name="innerProgress" format="integer" />
         <attr name="innerProgressColor" format="color" />
@@ -42,5 +44,7 @@
             <flag name="normal" value="0" />
             <flag name="bold" value="1" />
         </attr>
+
+        <attr name="todayBackgroundColor" format="color" />
     </declare-styleable>
 </resources>
